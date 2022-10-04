@@ -1,25 +1,27 @@
 package com.myCompany.budgetManagement.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
+@Entity
 public class Transaction {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @ManyToOne
+    @JoinColumn(
+            name = "account_id",
+            referencedColumnName = "id",
+            nullable = false)
     @JsonBackReference
-    final private Account account;
-    final private String memo;
-    final private float amount;
-    final private LocalDateTime date;
+    private Account account;
+    private String memo;
+    private float amount;
+    private LocalDateTime date = LocalDateTime.now();
 
-    public Transaction(Account account, String memo, float amount) {
-        this.account = Objects.requireNonNull(account);
-        this.amount = amount;
-        this.date = LocalDateTime.now();
-        this.memo = Objects.requireNonNull(memo);
-    }
+    public Transaction() {}
 
     public int getId() {
         return id;
@@ -33,15 +35,31 @@ public class Transaction {
         return account;
     }
 
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
     public String getMemo() {
         return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
     }
 
     public float getAmount() {
         return amount;
     }
 
+    public void setAmount(float amount) {
+        this.amount = amount;
+    }
+
     public LocalDateTime getDate() {
         return date;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
     }
 }

@@ -1,14 +1,22 @@
 package com.myCompany.budgetManagement.service;
 
-import com.myCompany.budgetManagement.repository.TransactionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.myCompany.budgetManagement.model.Transaction;
 
-@Service
-public class TransactionService {
+import java.util.List;
+import java.util.Optional;
 
-    @Autowired
-    TransactionRepository repository;
+public interface TransactionService {
+    List<Transaction> findAll();
 
+    List<Transaction> findAllByAccount(Integer accountId);
 
+    Transaction findById(Integer id);
+
+    Transaction save(Transaction transaction);
+
+    void deleteAll();
+
+    void deleteById(Integer id);
+
+    Transaction replaceById(Integer id, Transaction transaction);
 }
