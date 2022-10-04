@@ -43,7 +43,7 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /api/v1/transactions/2:
+  /api/v1/transactions/1:
     get:
       tags:
         - default
@@ -53,23 +53,6 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /api/v1/transactions/:
-    get:
-      tags:
-        - default
-      summary: GET AccountID
-      parameters:
-        - name: id
-          in: query
-          schema:
-            type: integer
-          example: '1'
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-  /api/v1/transactions/1:
     put:
       tags:
         - default
@@ -81,7 +64,8 @@ paths:
               type: object
               example:
                 memo: test 2
-                account: {}
+                account:
+                  id: 1
                 amount: 1
       responses:
         '200':
@@ -92,6 +76,22 @@ paths:
       tags:
         - default
       summary: DELETE id
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/transactions/:
+    get:
+      tags:
+        - default
+      summary: GET AccountID
+      parameters:
+        - name: account_id
+          in: query
+          schema:
+            type: integer
+          example: '1'
       responses:
         '200':
           description: Successful response

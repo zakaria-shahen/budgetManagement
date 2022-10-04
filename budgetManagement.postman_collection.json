@@ -33,7 +33,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/api/v1/transactions/2",
+					"raw": "http://localhost:8080/api/v1/transactions/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -43,7 +43,7 @@
 						"api",
 						"v1",
 						"transactions",
-						"2"
+						"1"
 					]
 				}
 			},
@@ -55,7 +55,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/api/v1/transactions/?id=1",
+					"raw": "http://localhost:8080/api/v1/transactions/?account_id=1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -69,7 +69,7 @@
 					],
 					"query": [
 						{
-							"key": "id",
+							"key": "account_id",
 							"value": "1"
 						}
 					]
@@ -114,7 +114,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"memo\": \"test 2\",\r\n    \"account\": {},\r\n    \"amount\": 1\r\n}",
+					"raw": "{\r\n    \"memo\": \"test 2\",\r\n    \"account\":{\"id\": 1},\r\n    \"amount\": 1\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
