@@ -1,8 +1,12 @@
 package com.myCompany.budgetManagement.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
@@ -16,12 +20,14 @@ public class Transaction {
             referencedColumnName = "id",
             nullable = false)
     @JsonBackReference
+    @NotNull
     private Account account;
+    @NotEmpty
     private String memo;
+    @Min(1)
     private float amount;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime date = LocalDateTime.now();
-
-    public Transaction() {}
 
     public int getId() {
         return id;

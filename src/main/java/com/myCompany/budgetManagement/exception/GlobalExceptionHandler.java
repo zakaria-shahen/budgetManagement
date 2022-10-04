@@ -26,6 +26,12 @@ public class GlobalExceptionHandler {
         return responseBuilder(HttpStatus.CONFLICT.value(), request.getRequestURI(), e.getMessage());
     }
 
+    @ExceptionHandler(NotEnteredForeignKeyIdException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, Object> NotEnteredForeignKeyIdHandle(HttpServletRequest request, Exception e){
+        return responseBuilder(HttpStatus.BAD_REQUEST.value(), request.getRequestURI(), e.getMessage());
+    }
+
 
     private Map<String, Object> responseBuilder(int status, String url, String massage) {
         Map<String, Object> response = new LinkedHashMap<>();
