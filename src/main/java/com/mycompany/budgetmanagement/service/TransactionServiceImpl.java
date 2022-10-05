@@ -1,16 +1,17 @@
-package com.myCompany.budgetManagement.service;
+package com.mycompany.budgetmanagement.service;
 
-import com.myCompany.budgetManagement.exception.NotEnteredForeignKeyIdException;
-import com.myCompany.budgetManagement.exception.NotFoundException;
-import com.myCompany.budgetManagement.exception.NotFoundForeignKeyIdException;
-import com.myCompany.budgetManagement.model.Transaction;
-import com.myCompany.budgetManagement.repository.TransactionRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Service;
+
+import com.mycompany.budgetmanagement.exception.NotEnteredForeignKeyIdException;
+import com.mycompany.budgetmanagement.exception.NotFoundException;
+import com.mycompany.budgetmanagement.exception.NotFoundForeignKeyIdException;
+import com.mycompany.budgetmanagement.model.Transaction;
+import com.mycompany.budgetmanagement.repository.TransactionRepository;
 
 import java.util.List;
 

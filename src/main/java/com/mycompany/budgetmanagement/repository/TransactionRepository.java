@@ -1,9 +1,10 @@
-package com.myCompany.budgetManagement.repository;
+package com.mycompany.budgetmanagement.repository;
 
-import com.myCompany.budgetManagement.model.Account;
-import com.myCompany.budgetManagement.model.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.mycompany.budgetmanagement.model.Transaction;
+import com.mycompany.budgetmanagement.model.User;
 
 import java.util.List;
 

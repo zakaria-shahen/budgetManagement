@@ -1,4 +1,4 @@
-package com.myCompany.budgetManagement;
+package com.mycompany.budgetmanagement;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

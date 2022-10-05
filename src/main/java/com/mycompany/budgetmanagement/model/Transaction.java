@@ -1,4 +1,4 @@
-package com.myCompany.budgetManagement.model;
+package com.mycompany.budgetmanagement.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -13,36 +13,49 @@ import java.time.LocalDateTime;
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
+
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(
-            name = "account_id",
+            name = "user_id",
             referencedColumnName = "id",
             nullable = false)
     @JsonBackReference
     @NotNull
-    private Account account;
+    private User user;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "household_id",
+            referencedColumnName = "id",
+            nullable = false)
+    @JsonBackReference
+    @NotNull
+    private Household household;
+
     @NotEmpty
     private String memo;
+
     @Min(1)
     private float amount;
+
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime date = LocalDateTime.now();
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Account getAccount() {
-        return account;
+    public User getAccount() {
+        return user;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
+    public void setAccount(User account) {
+        this.user = account;
     }
 
     public String getMemo() {

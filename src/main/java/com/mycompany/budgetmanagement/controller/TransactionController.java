@@ -1,12 +1,13 @@
-package com.myCompany.budgetManagement.controller;
+package com.mycompany.budgetmanagement.controller;
 
 
-import com.myCompany.budgetManagement.exception.NotFoundException;
-import com.myCompany.budgetManagement.model.Transaction;
-import com.myCompany.budgetManagement.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import com.mycompany.budgetmanagement.exception.NotFoundException;
+import com.mycompany.budgetmanagement.model.Transaction;
+import com.mycompany.budgetmanagement.service.TransactionService;
 
 import javax.validation.Valid;
 import java.util.List;

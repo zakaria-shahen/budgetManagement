@@ -1,4 +1,4 @@
-package com.myCompany.budgetManagement.exception;
+package com.mycompany.budgetmanagement.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
