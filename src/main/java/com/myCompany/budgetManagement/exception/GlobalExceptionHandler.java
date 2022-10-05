@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.ConnectException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -32,6 +33,15 @@ public class GlobalExceptionHandler {
         return responseBuilder(HttpStatus.BAD_REQUEST.value(), request.getRequestURI(), e.getMessage());
     }
 
+
+    @ExceptionHandler(ConnectException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Map<String, Object> DatabaseConnectHandler(HttpServletRequest request) {
+        return responseBuilder(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                request.getRequestURI(),
+                "DB Connection refused");
+    }
 
     private Map<String, Object> responseBuilder(int status, String url, String massage) {
         Map<String, Object> response = new LinkedHashMap<>();
