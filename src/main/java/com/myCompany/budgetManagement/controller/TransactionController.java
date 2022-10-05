@@ -1,13 +1,11 @@
 package com.myCompany.budgetManagement.controller;
 
 
+import com.myCompany.budgetManagement.model.Transaction;
+import com.myCompany.budgetManagement.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import com.myCompany.budgetManagement.exception.NotFoundException;
-import com.myCompany.budgetManagement.model.Transaction;
-import com.myCompany.budgetManagement.service.TransactionService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -55,15 +53,6 @@ public class TransactionController {
     public Map<String, String> deleteByID(@PathVariable Long id) {
         service.deleteById(id);
         return Map.of("massage", "resource updated successfully");
-    }
-
-    @PutMapping("{id}")
-    public Transaction put(@PathVariable Long id, @RequestBody Transaction transaction) {
-        try {
-            return service.replaceById(id, transaction);
-        } catch (NotFoundException e) {
-            return service.save(transaction);
-        }
     }
 
 }

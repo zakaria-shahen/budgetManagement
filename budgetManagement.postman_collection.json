@@ -108,37 +108,6 @@
 			"response": []
 		},
 		{
-			"name": "PUT id",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"memo\": \"test 2\",\r\n    \"user\":{\"id\": 1},\r\n    \"amount\": 1\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/api/v1/transactions/1",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"transactions",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "DELETE id",
 			"request": {
 				"method": "DELETE",

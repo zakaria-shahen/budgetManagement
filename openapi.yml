@@ -55,25 +55,6 @@ paths:
           description: Successful response
           content:
             application/json: {}
-    put:
-      tags:
-        - default
-      summary: PUT id
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                memo: test 2
-                user:
-                  id: 1
-                amount: 1
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
     delete:
       tags:
         - default

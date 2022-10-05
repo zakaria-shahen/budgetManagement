@@ -17,5 +17,4 @@ public interface TransactionService {
 
     void deleteById(Long id);
 
-    Transaction replaceById(Long id, Transaction transaction);
 }
