@@ -1,13 +1,13 @@
-package com.mycompany.budgetmanagement.controller;
+package com.myCompany.budgetManagement.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import com.mycompany.budgetmanagement.exception.NotFoundException;
-import com.mycompany.budgetmanagement.model.Transaction;
-import com.mycompany.budgetmanagement.service.TransactionService;
+import com.myCompany.budgetManagement.exception.NotFoundException;
+import com.myCompany.budgetManagement.model.Transaction;
+import com.myCompany.budgetManagement.service.TransactionService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -25,17 +25,17 @@ public class TransactionController {
     }
 
     @GetMapping
-    public List<Transaction> getByAccount(
-            @RequestParam(required = false, name = "account_id") Integer accountId) {
-        if (accountId == null) {
+    public List<Transaction> getByUser(
+            @RequestParam(required = false, name = "User_id") Long UserId) {
+        if (UserId == null) {
             return service.findAll();
         }
-        return service.findAllByAccount(accountId);
+        return service.findAllByUser(UserId);
     }
 
     @GetMapping("{id}")
     @ResponseStatus(HttpStatus.FOUND)
-    public Transaction getByID(@PathVariable Integer id) {
+    public Transaction getByID(@PathVariable Long id) {
         return service.findById(id);
     }
 
@@ -52,13 +52,13 @@ public class TransactionController {
     }
 
     @DeleteMapping("{id}")
-    public Map<String, String> deleteByID(@PathVariable Integer id) {
+    public Map<String, String> deleteByID(@PathVariable Long id) {
         service.deleteById(id);
         return Map.of("massage", "resource updated successfully");
     }
 
     @PutMapping("{id}")
-    public Transaction put(@PathVariable Integer id, @RequestBody Transaction transaction) {
+    public Transaction put(@PathVariable Long id, @RequestBody Transaction transaction) {
         try {
             return service.replaceById(id, transaction);
         } catch (NotFoundException e) {

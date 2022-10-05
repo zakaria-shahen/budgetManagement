@@ -1,4 +1,4 @@
-package com.mycompany.budgetmanagement.service;
+package com.myCompany.budgetManagement.service;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,11 +7,11 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Service;
 
-import com.mycompany.budgetmanagement.exception.NotEnteredForeignKeyIdException;
-import com.mycompany.budgetmanagement.exception.NotFoundException;
-import com.mycompany.budgetmanagement.exception.NotFoundForeignKeyIdException;
-import com.mycompany.budgetmanagement.model.Transaction;
-import com.mycompany.budgetmanagement.repository.TransactionRepository;
+import com.myCompany.budgetManagement.exception.NotEnteredForeignKeyIdException;
+import com.myCompany.budgetManagement.exception.NotFoundException;
+import com.myCompany.budgetManagement.exception.NotFoundForeignKeyIdException;
+import com.myCompany.budgetManagement.model.Transaction;
+import com.myCompany.budgetManagement.repository.TransactionRepository;
 
 import java.util.List;
 
@@ -31,12 +31,12 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<Transaction> findAllByAccount(Integer accountId) {
-        return repository.findByAccountId(accountId);
+    public List<Transaction> findAllByUser(Long UserId) {
+        return repository.findByUserId(UserId);
     }
 
     @Override
-    public Transaction findById(Integer id) {
+    public Transaction findById(Long id) {
         var transaction = repository.findById(id);
         if (transaction.isEmpty()) {
             throw new NotFoundException("Not Found Transaction");
@@ -50,9 +50,9 @@ public class TransactionServiceImpl implements TransactionService {
             return repository.save(transaction);
         } catch (DataIntegrityViolationException e) {
             // if (e.getCause() instanceof ConstraintViolationException)
-           throw new NotFoundForeignKeyIdException("Not Found Account ID (Foreign Key)");
+           throw new NotFoundForeignKeyIdException("Not Found User/household ID (Foreign Key)");
         } catch (InvalidDataAccessApiUsageException e){
-            throw new NotEnteredForeignKeyIdException("Must add Account ID (Foreign Key)");
+            throw new NotEnteredForeignKeyIdException("Must add User/household ID (Foreign Key)");
 
         }
     }
@@ -63,7 +63,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public void deleteById(Integer id) {
+    public void deleteById(Long id) {
         try {
             repository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
@@ -72,7 +72,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public Transaction replaceById(Integer id, Transaction transaction) {
+    public Transaction replaceById(Long id, Transaction transaction) {
         var old = findById(id);
         BeanUtils.copyProperties(transaction, old, "id");
         return old;

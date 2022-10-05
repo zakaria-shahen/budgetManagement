@@ -1,7 +1,8 @@
-package com.mycompany.budgetmanagement.model;
+package com.myCompany.budgetManagement.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonValueInstantiator;
+import org.springframework.data.web.JsonPath;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
@@ -15,12 +16,13 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false)
     @JoinColumn(
             name = "user_id",
             referencedColumnName = "id",
             nullable = false)
-    @JsonBackReference
+    @JsonIncludeProperties("id")
+    // TODO: convert to Integer ID (only JSON)
     @NotNull
     private User user;
 
@@ -29,7 +31,7 @@ public class Transaction {
             name = "household_id",
             referencedColumnName = "id",
             nullable = false)
-    @JsonBackReference
+    @JsonIncludeProperties("id")
     @NotNull
     private Household household;
 
@@ -50,12 +52,20 @@ public class Transaction {
         this.id = id;
     }
 
-    public User getAccount() {
+    public User getUser() {
         return user;
     }
 
-    public void setAccount(User account) {
-        this.user = account;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Household getHousehold() {
+        return household;
+    }
+
+    public void setHousehold(Household household) {
+        this.household = household;
     }
 
     public String getMemo() {
@@ -81,4 +91,5 @@ public class Transaction {
     public void setDate(LocalDateTime date) {
         this.date = date;
     }
+
 }

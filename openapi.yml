@@ -26,7 +26,9 @@ paths:
               type: object
               example:
                 memo: test 1
-                account:
+                user:
+                  id: 1
+                household:
                   id: 1
                 amount: 1
       responses:
@@ -64,7 +66,7 @@ paths:
               type: object
               example:
                 memo: test 2
-                account:
+                user:
                   id: 1
                 amount: 1
       responses:
@@ -85,9 +87,9 @@ paths:
     get:
       tags:
         - default
-      summary: GET AccountID
+      summary: GET UserID
       parameters:
-        - name: account_id
+        - name: User_id
           in: query
           schema:
             type: integer

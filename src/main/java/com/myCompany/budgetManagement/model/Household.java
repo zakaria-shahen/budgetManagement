@@ -1,33 +1,27 @@
-package com.mycompany.budgetmanagement.model;
+package com.myCompany.budgetManagement.model;
 
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
-
 import java.util.List;
 
 @Entity
-public class User {
-    @Id()
+public class Household {
+
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
-    
-    @OneToMany(mappedBy = "account")
-    @JsonManagedReference
+    private Long id;
+
+    @OneToMany(mappedBy = "household")
     private List<Transaction> transactions;
 
-    public User(){}
-
-    public User(Integer accountId) {
-    }
-
     public Long getId() {
-        return userId;
+        return id;
     }
 
     public void setId(Long id) {
-        this.userId = id;
+        this.id = id;
     }
 
     public List<Transaction> getTransactions() {

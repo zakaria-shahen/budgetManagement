@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "71d9576b-0979-4543-80f8-ca4e2d25fdba",
+		"_postman_id": "ab38748e-a010-4367-ab97-0133b6610355",
 		"name": "budgetManagement",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "18052030"
@@ -50,12 +50,12 @@
 			"response": []
 		},
 		{
-			"name": "GET AccountID",
+			"name": "GET UserID",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/api/v1/transactions/?account_id=1",
+					"raw": "http://localhost:8080/api/v1/transactions/?User_id=1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -69,7 +69,7 @@
 					],
 					"query": [
 						{
-							"key": "account_id",
+							"key": "User_id",
 							"value": "1"
 						}
 					]
@@ -84,7 +84,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"memo\": \"test 1\",\r\n    \"account\": {\"id\": 1},\r\n    \"amount\": 1\r\n\r\n}",
+					"raw": "{\r\n    \"memo\": \"test 1\",\r\n    \"user\": {\"id\": 1},\r\n    \"household\":{\"id\": 1},\r\n    \"amount\": 1\r\n\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -114,7 +114,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"memo\": \"test 2\",\r\n    \"account\":{\"id\": 1},\r\n    \"amount\": 1\r\n}",
+					"raw": "{\r\n    \"memo\": \"test 2\",\r\n    \"user\":{\"id\": 1},\r\n    \"amount\": 1\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
