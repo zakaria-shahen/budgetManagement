@@ -7,15 +7,19 @@ import org.springframework.stereotype.Service;
 
 import com.myCompany.budgetManagement.exception.NotFoundException;
 import com.myCompany.budgetManagement.model.Household;
+import com.myCompany.budgetManagement.model.User;
 import com.myCompany.budgetManagement.repository.HouseholdRepository;
+import com.myCompany.budgetManagement.repository.UserRepository;
 
 @Service
 public class HouseholdService {
 
     private HouseholdRepository householdRepository;
+    private UserRepository userRepository;
 
-    public HouseholdService(HouseholdRepository householdRepository) {
+    public HouseholdService(HouseholdRepository householdRepository, UserRepository userRepository) {
         this.householdRepository = householdRepository;
+        this.userRepository = userRepository;
     }
 
     public List<Household> findAll() {
@@ -28,7 +32,7 @@ public class HouseholdService {
                 .orElseThrow(() -> new NotFoundException("Household not found with id = " + id));
     }
 
-    public Household findByInviationCode(String invitationCode) {
+    public Household findByInvitationCode(String invitationCode) {
         return householdRepository
                 .findByInvitationCode(invitationCode)
                 .orElseThrow(() -> new NotFoundException("Household not found with code = " + invitationCode));
@@ -51,8 +55,43 @@ public class HouseholdService {
         try {
             householdRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
-             throw new NotFoundException("Household not found with id = " + id);
+            throw new NotFoundException("Household not found with id = " + id);
         }
+    }
+
+    // ---------------------------------------------------------------------------
+
+    public List<User> findAllMembers(Long householdId) {
+        Household household = findById(householdId);
+        return household.getMembers();
+    }
+
+    // TODO: use UserService instead
+    public void addMember(Long householdId, Long memberId) {
+        Household household = findById(householdId);
+        User member = userRepository
+                .findById(memberId)
+                .orElseThrow(() -> new NotFoundException("User not found with id = " + memberId));
+
+        member.setHousehold(household);
+        household.getMembers().add(member);
+
+        householdRepository.save(household);
+        userRepository.save(member);
+    }
+
+    // TODO: use UserService instead
+    public void deleteMember(Long householdId, Long memberId) {
+        Household household = findById(householdId);
+        User member = userRepository
+                .findById(memberId)
+                .orElseThrow(() -> new NotFoundException("User not found with id = " + memberId));
+
+        member.setHousehold(null);
+        household.getMembers().remove(member);
+
+        householdRepository.save(household);
+        userRepository.save(member);
     }
 
 }

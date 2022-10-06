@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 
@@ -21,6 +20,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    String name;
+
     @OneToMany(mappedBy = "user")
     private List<Transaction> transactions;
 
@@ -29,6 +30,5 @@ public class User {
             name = "household_id",
             referencedColumnName = "id")
     @JsonIncludeProperties("id")
-    @NotNull
     private Household household;
 }
