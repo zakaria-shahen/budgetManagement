@@ -28,15 +28,15 @@ public class ArgumentNotValidResponseBuilder {
         this.message = messageBuilder(e.getObjectName(), e.getErrorCount());
     }
 
-    private String messageBuilder(String objectName, int ErrorCount) {
-        return "Validation failed for object='%s'. Error count: %s".formatted(objectName, ErrorCount);
-    }
-
     public ResponseEntity<ArgumentNotValidResponseBuilder> responseEntityBuild() {
         return new ResponseEntity<>(this, status);
     }
 
-    private LinkedHashMap<String, String> errorsBuilder(List<FieldError> e) {
+    private static String messageBuilder(String objectName, int ErrorCount) {
+        return "Validation failed for object='%s'. Error count: %s".formatted(objectName, ErrorCount);
+    }
+
+    private static LinkedHashMap<String, String> errorsBuilder(List<FieldError> e) {
         var errorsArrayString = e.stream()
                 .map(x -> List.of(x.getField(), x.getDefaultMessage()))
                 .flatMap(Collection::stream)
