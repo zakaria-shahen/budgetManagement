@@ -35,11 +35,8 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public Transaction findById(Long id) {
-        var transaction = repository.findById(id);
-        if (transaction.isEmpty()) {
-            throw new NotFoundException("Not Found Transaction");
-        }
-        return repository.findById(id).get();
+        return repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Not Found Transaction"));
     }
 
     @Override
