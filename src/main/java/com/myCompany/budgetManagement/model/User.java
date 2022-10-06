@@ -24,11 +24,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-     private String name;
+    private String name;
 
-     @ManyToOne
-     @JoinColumn(name ="role_id")
-     private Role role;
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
 
     @OneToMany(mappedBy = "user")
     private List<Transaction> transactions;

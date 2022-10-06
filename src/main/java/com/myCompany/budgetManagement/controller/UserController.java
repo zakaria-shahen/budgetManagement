@@ -8,18 +8,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1/users")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @GetMapping("/users")
+    @GetMapping
     public ResponseEntity<?> getAll(){
         return  ResponseEntity.status(HttpStatus.OK).body(userService.getAllUser());
     }
 
-    @PostMapping("/user")
+    @PostMapping
     public ResponseEntity<?> save(@RequestBody User user){
         try{
             return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveUser(user));
@@ -29,7 +29,7 @@ public class UserController {
 
     }
 
-    @GetMapping("/user/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<?> getUser(@PathVariable Long id){
         try {
             return ResponseEntity.status(HttpStatus.OK).body(userService.findUserById(id));
@@ -39,7 +39,7 @@ public class UserController {
 
     }
 
-    @PutMapping("/user")
+    @PutMapping
     public ResponseEntity<?> updateUser(@RequestBody User user){
         try {
             return ResponseEntity.status(HttpStatus.OK).body(userService.update(user));
@@ -49,7 +49,7 @@ public class UserController {
 
     }
 
-    @DeleteMapping("/user/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<?> deleteUser(@PathVariable long id){
         try {
             userService.deleteUser(id);
