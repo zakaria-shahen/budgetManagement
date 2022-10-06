@@ -168,29 +168,29 @@ A group of Users with thier Transactions.
 1.  households
 
     1.  getAllHouseholds: [GET   ] /households
-    
-    2.  getHousehold:     [GET   ] /households/{code}
-    
+
+    2.  getHouseholdById: [GET   ] /households/{id}
+
     3.  createHousehold:  [POST  ] /households
-    
-    4.  updateHousehold:  [PUT   ] /households
-    
-    5.  deleteHousehold:  [DELETE] /households
+
+    4.  updateHousehold:  [PUT   ] /households/{id}
+
+    5.  deleteHousehold:  [DELETE] /households/{id}
 
 2.  memebers
 
     1.  getAllMembersUnderHousehold: [GET   ] /households/{code}/members
-    
+
     2.  addMemberUnderHousehold:     [POST  ] /households/{code}/members
-    
+
     3.  deleteMemberUnderHousehold:  [DELETE] /households/{code}/members/{id}
 
 3.  transactions
 
     1.  getAllTransactionsUnderHousehold: [GET ] /households/{code}/transactions
-    
+
     2.  getTransactionUnderHousehold:     [GET ] /households/{code}/transactions/{id}
-    
+
     3.  createTransactionUnderHousehold:  [POST] /households/{code}/transactions
 
 
