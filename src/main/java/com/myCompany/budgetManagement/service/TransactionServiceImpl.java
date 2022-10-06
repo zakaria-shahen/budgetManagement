@@ -45,9 +45,9 @@ public class TransactionServiceImpl implements TransactionService {
             return repository.save(transaction);
         } catch (DataIntegrityViolationException e) {
             // if (e.getCause() instanceof ConstraintViolationException)
-           throw new NotFoundForeignKeyIdException("Not Found User/household ID (Foreign Key)");
+           throw new NotFoundForeignKeyIdException("Not Found User ID or/and household ID (Foreign Key)");
         } catch (InvalidDataAccessApiUsageException e){
-            throw new NotEnteredForeignKeyIdException("Must add User/household ID (Foreign Key)");
+            throw new NotEnteredForeignKeyIdException("Must add User ID or/and household ID (Foreign Key)");
 
         }
     }

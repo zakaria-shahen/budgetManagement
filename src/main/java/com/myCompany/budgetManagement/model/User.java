@@ -1,16 +1,15 @@
 package com.myCompany.budgetManagement.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-
-import com.fasterxml.jackson.annotation.JsonIncludeProperties;
-
 import java.util.List;
 
 @Entity(name = "user_")
@@ -38,6 +37,7 @@ public class User {
             name = "household_id",
             referencedColumnName = "id")
     @JsonIncludeProperties("id")
+    @JsonUnwrapped(prefix = "household_")
     private Household household;
 }
 

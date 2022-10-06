@@ -1,9 +1,6 @@
 package com.myCompany.budgetManagement.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIncludeProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,7 +29,7 @@ public class Transaction {
             referencedColumnName = "id",
             nullable = false)
     @JsonIncludeProperties("id")
-    // TODO: convert to Integer ID (only JSON)
+    @JsonUnwrapped(prefix = "user_")
     @NotNull
     private User user;
 
@@ -42,6 +39,7 @@ public class Transaction {
             referencedColumnName = "id",
             nullable = false)
     @JsonIncludeProperties("id")
+    @JsonUnwrapped(prefix = "household_")
     @NotNull
     private Household household;
 

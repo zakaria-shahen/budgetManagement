@@ -74,8 +74,8 @@ public class HouseholdController {
 
     @GetMapping("/{householdId}/members")
     public ResponseEntity<List<User>> getAllMembersOfHousehold(@PathVariable Long householdId) {
-        List<User> allMemebers = householdService.findAllMembers(householdId);
-        return new ResponseEntity<>(allMemebers, HttpStatus.OK);
+        List<User> allMembers = householdService.findAllMembers(householdId);
+        return new ResponseEntity<>(allMembers, HttpStatus.OK);
     }
 
     @PostMapping("/{householdId}/members")
