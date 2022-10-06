@@ -25,6 +25,9 @@ public class User {
     private Long id;
 
      private String name;
+
+     @ManyToOne
+     @JoinColumn(name ="role_id")
      private Role role;
 
     @OneToMany(mappedBy = "user")

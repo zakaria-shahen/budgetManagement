@@ -30,7 +30,7 @@ public class UserController {
     }
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<?> getUser(@PathVariable int id){
+    public ResponseEntity<?> getUser(@PathVariable Long id){
         try {
             return ResponseEntity.status(HttpStatus.OK).body(userService.findUserById(id));
         }catch (RuntimeException e){
@@ -50,9 +50,10 @@ public class UserController {
     }
 
     @DeleteMapping("/user/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable int id){
+    public ResponseEntity<?> deleteUser(@PathVariable long id){
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(userService.deleteUser(id));
+            userService.deleteUser(id);
+            return ResponseEntity.status(HttpStatus.OK).body("UserDeleted");
         }catch (RuntimeException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("NO Such User");
         }
