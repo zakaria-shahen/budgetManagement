@@ -1,5 +1,6 @@
 package com.myCompany.budgetManagement.model;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonPropertyOrder({"id", "transactions"})
 public class Household {
 
     @Id

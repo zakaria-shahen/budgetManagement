@@ -23,11 +23,12 @@ public class TransactionController {
     }
 
     @GetMapping
-    public List<Transaction> getByUser(
-            @RequestParam(required = false, name = "User_id") Long UserId) {
-        if (UserId == null) {
+    public List<Transaction> get() {
             return service.findAll();
-        }
+    }
+
+    @GetMapping(params = "user_id")
+    public List<Transaction> getByUser(@RequestParam(name = "user_id") Long UserId) {
         return service.findAllByUser(UserId);
     }
 
