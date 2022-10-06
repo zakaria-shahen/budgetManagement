@@ -24,7 +24,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    String name;
+     private String name;
+
+     @ManyToOne
+     @JoinColumn(name ="role_id")
+     private Role role;
 
     @OneToMany(mappedBy = "user")
     private List<Transaction> transactions;
@@ -36,3 +40,5 @@ public class User {
     @JsonIncludeProperties("id")
     private Household household;
 }
+
+   
