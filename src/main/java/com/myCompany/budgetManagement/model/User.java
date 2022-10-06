@@ -6,6 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+
 import java.util.List;
 
 @Entity(name = "user_")
@@ -19,4 +23,12 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Transaction> transactions;
+
+    @ManyToOne
+    @JoinColumn(
+            name = "household_id",
+            referencedColumnName = "id")
+    @JsonIncludeProperties("id")
+    @NotNull
+    private Household household;
 }

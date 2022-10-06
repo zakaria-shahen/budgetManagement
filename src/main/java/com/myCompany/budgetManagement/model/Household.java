@@ -19,4 +19,8 @@ public class Household {
 
     @OneToMany(mappedBy = "household")
     private List<Transaction> transactions;
+
+    @OneToMany(mappedBy = "household")
+    private List<User> members;
+
 }
