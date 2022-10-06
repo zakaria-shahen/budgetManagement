@@ -1,47 +1,58 @@
 package com.myCompany.budgetManagement.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
+@Entity
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonPropertyOrder({"id", "amount", "memo", "date", "user", "household"})
 public class Transaction {
-    private int id;
-    @JsonBackReference
-    final private Account account;
-    final private String memo;
-    final private float amount;
-    final private LocalDateTime date;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    public Transaction(Account account, String memo, float amount) {
-        this.account = Objects.requireNonNull(account);
-        this.amount = amount;
-        this.date = LocalDateTime.now();
-        this.memo = Objects.requireNonNull(memo);
-    }
+    @ManyToOne(optional = false)
+    @JoinColumn(
+            name = "user_id",
+            referencedColumnName = "id",
+            nullable = false)
+    @JsonIncludeProperties("id")
+    // TODO: convert to Integer ID (only JSON)
+    @NotNull
+    private User user;
 
-    public int getId() {
-        return id;
-    }
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "household_id",
+            referencedColumnName = "id",
+            nullable = false)
+    @JsonIncludeProperties("id")
+    @NotNull
+    private Household household;
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    @NotEmpty
+    private String memo;
 
-    public Account getAccount() {
-        return account;
-    }
+    @Min(1)
+    private float amount;
 
-    public String getMemo() {
-        return memo;
-    }
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonFormat(pattern = "dd-mm-yyyy hh:mm")
+    private LocalDateTime date = LocalDateTime.now();
 
-    public float getAmount() {
-        return amount;
-    }
-
-    public LocalDateTime getDate() {
-        return date;
-    }
 }
