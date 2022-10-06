@@ -55,5 +55,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorMassage, errorMassage.status());
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<ArgumentNotValidResponseBuilder>
+        MethodArgumentNotValidHandler(HttpServletRequest request, MethodArgumentNotValidException e){
+        var repo = new ArgumentNotValidResponseBuilder(request.getRequestURI(), HttpStatus.BAD_REQUEST, e);
+        return repo.responseEntityBuild();
+    }
 
 }
