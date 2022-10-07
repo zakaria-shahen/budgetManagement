@@ -34,6 +34,11 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    public List<Transaction> findAllByHousehold(Long householdId) {
+        return repository.findByHouseholdId(householdId);
+    }
+
+    @Override
     public Transaction findById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Not Found Transaction"));
