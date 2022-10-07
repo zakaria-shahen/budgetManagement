@@ -9,6 +9,8 @@ public interface TransactionService {
 
     List<Transaction> findAllByUser(Long accountId);
 
+    List<Transaction> findAllByHousehold(Long householdId);
+
     Transaction findById(Long id);
 
     Transaction save(Transaction transaction);
