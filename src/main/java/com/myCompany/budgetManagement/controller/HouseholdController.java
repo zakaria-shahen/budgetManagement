@@ -44,18 +44,8 @@ public class HouseholdController {
 
     @PostMapping
     public ResponseEntity<?> postHousehold(@RequestBody Household household) {
-        householdService.create(household);
 
-        // Set the location header for the newly created Household
-        HttpHeaders responseHeaders = new HttpHeaders();
-        URI newHouseholdlUri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(household.getId())
-                .toUri();
-        responseHeaders.setLocation(newHouseholdlUri);
-
-        return new ResponseEntity<>(responseHeaders, HttpStatus.CREATED);
+        return new ResponseEntity<>(householdService.create(household), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")

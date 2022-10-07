@@ -25,14 +25,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty
+    @NotEmpty @NotNull
     private String name;
 
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
-    @JsonIncludeProperties("name")
+    @JsonIncludeProperties("id")
     @JsonUnwrapped(prefix = "role_")
-    @NotNull
     private Role role;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
@@ -42,11 +41,8 @@ public class User {
             nullable = false)
     @JsonIncludeProperties("id")
     @JsonUnwrapped(prefix = "household_")
-    @NotNull
     private Household household;
 
     @OneToMany(mappedBy = "user")
     private List<Transaction> transactions;
 }
-
-   

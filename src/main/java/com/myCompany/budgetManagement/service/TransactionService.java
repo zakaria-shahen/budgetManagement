@@ -1,8 +1,8 @@
 package com.myCompany.budgetManagement.service;
 
-import java.util.List;
-
 import com.myCompany.budgetManagement.model.Transaction;
+
+import java.util.List;
 
 public interface TransactionService {
     List<Transaction> findAll();

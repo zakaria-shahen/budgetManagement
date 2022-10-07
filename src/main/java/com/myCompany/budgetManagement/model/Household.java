@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,7 +30,7 @@ public class Household {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty
+    @NotEmpty @NotNull
     private String name;
 
     @PositiveOrZero
@@ -43,7 +41,6 @@ public class Household {
     private BigDecimal monthlyDeposits;
 
     @OneToMany(mappedBy = "household")
-    @Min(1)
     private List<User> members;
 
     @OneToMany(mappedBy = "household")

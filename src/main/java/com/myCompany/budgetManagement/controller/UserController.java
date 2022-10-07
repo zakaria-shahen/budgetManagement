@@ -7,6 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/v1/users")
 public class UserController {
@@ -15,48 +18,37 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    public ResponseEntity<?> getAll(){
-        return  ResponseEntity.status(HttpStatus.OK).body(userService.getAllUser());
+    public ResponseEntity<?> getAll() {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getAllUser());
     }
 
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody User user){
-        try{
-            return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveUser(user));
-        }catch (RuntimeException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("BAD REQUEST");
-        }
+    public ResponseEntity<?> save(@Valid @RequestBody User user) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(userService.saveUser(user));
 
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<?> getUser(@PathVariable Long id){
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(userService.findUserById(id));
-        }catch (RuntimeException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("NO such User");
-        }
-
+    public ResponseEntity<?> getUser(@PathVariable Long id) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userService.findUserById(id));
     }
 
     @PutMapping
-    public ResponseEntity<?> updateUser(@RequestBody User user){
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(userService.update(user));
-        }catch(Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad Request");
-        }
-
+    public ResponseEntity<?> updateUser(@Valid @RequestBody User user) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userService.update(user));
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable long id){
-        try {
-            userService.deleteUser(id);
-            return ResponseEntity.status(HttpStatus.OK).body("UserDeleted");
-        }catch (RuntimeException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("NO Such User");
-        }
+    public ResponseEntity<?> deleteUser(@PathVariable long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(Map.of("massage", "resource deleted successfully"));
 
     }
 }

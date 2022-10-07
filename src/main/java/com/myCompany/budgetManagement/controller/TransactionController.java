@@ -53,7 +53,7 @@ public class TransactionController {
     @DeleteMapping("{id}")
     public Map<String, String> deleteByID(@PathVariable Long id) {
         service.deleteById(id);
-        return Map.of("massage", "resource updated successfully");
+        return Map.of("massage", "resources deleted successfully");
     }
 
 }

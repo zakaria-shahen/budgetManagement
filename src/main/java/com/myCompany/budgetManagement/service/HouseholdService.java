@@ -1,15 +1,18 @@
 package com.myCompany.budgetManagement.service;
 
-import java.util.List;
-
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.stereotype.Service;
-
+import com.myCompany.budgetManagement.exception.DeleteDataIntegrityViolationException;
+import com.myCompany.budgetManagement.exception.NotEnteredForeignKeyIdException;
 import com.myCompany.budgetManagement.exception.NotFoundException;
 import com.myCompany.budgetManagement.model.Household;
 import com.myCompany.budgetManagement.model.User;
 import com.myCompany.budgetManagement.repository.HouseholdRepository;
 import com.myCompany.budgetManagement.repository.UserRepository;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class HouseholdService {
@@ -38,17 +41,25 @@ public class HouseholdService {
                 .orElseThrow(() -> new NotFoundException("Household not found with code = " + invitationCode));
     }
 
-    public void create(Household household) {
-        householdRepository.save(household);
+    public Household create(Household household) {
+        try {
+           return householdRepository.save(household);
+        } catch (InvalidDataAccessApiUsageException | DataIntegrityViolationException e){
+            throw new NotEnteredForeignKeyIdException("body request should have: {name, totalBalance}");
+        }
     }
 
-    public void update(Long id, Household household) {
+    public Household update(Long id, Household household) {
         if (!householdRepository.existsById(id)) {
             throw new NotFoundException("Household not found with id = " + id);
         }
 
         household.setId(id);
-        householdRepository.save(household);
+        try {
+            return householdRepository.save(household);
+        } catch (InvalidDataAccessApiUsageException | DataIntegrityViolationException e){
+            throw new NotEnteredForeignKeyIdException("body request should have: {name, totalBalance}");
+        }
     }
 
     public void deleteById(Long id) {
@@ -56,6 +67,10 @@ public class HouseholdService {
             householdRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
             throw new NotFoundException("Household not found with id = " + id);
+        } catch (DataIntegrityViolationException e) {
+            // TODO: household and FK
+            throw new DeleteDataIntegrityViolationException("Cannot delete household: " +
+                    "Must Delete all Transactions or/and the all Members leaves the household");
         }
     }
 

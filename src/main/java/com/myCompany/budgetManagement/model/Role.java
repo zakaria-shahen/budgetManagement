@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotEmpty;
+import java.util.Locale;
 
 @Entity
 @Getter
@@ -26,7 +27,11 @@ public class Role {
 
     public Role(int id, String name) {
         this.id = (byte) id;
-        this.name = name;
+        this.name = name.toLowerCase();
+    }
+
+    public Role(String name) {
+        this.name = name.toLowerCase();
     }
 
     @AssertTrue(message = "Must be any of the following values {'staff', 'co-Owner', 'owner'}")

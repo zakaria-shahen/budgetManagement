@@ -1,51 +1,67 @@
 package com.myCompany.budgetManagement.service;
 
-import com.myCompany.budgetManagement.model.Role;
+import com.myCompany.budgetManagement.exception.*;
 import com.myCompany.budgetManagement.model.User;
-import com.myCompany.budgetManagement.repository.RoleRepository;
 import com.myCompany.budgetManagement.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository repository;
 
-    @Autowired
-    private RoleRepository roleRepository;
+    public UserService(UserRepository repository) {
+        this.repository = repository;
+    }
+
 
     public List<User> getAllUser(){
-        return  userRepository.findAll();
+        return  repository.findAll();
     }
 
     public User findUserById(Long id ){
-        Optional<User> optionalUser = userRepository.findById(id);
-        return optionalUser.get();
+        return repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Not Found User"));
     }
 
     public void deleteUser(Long id){
-        Optional<User> userOptional = userRepository.findById(id);
-        if (userOptional.isEmpty())  throw new RuntimeException();
-        userRepository.delete(userOptional.get());
+        try {
+            repository.deleteById(id);
+        } catch (EmptyResultDataAccessException e){
+            throw new NotFoundException("Not Found User");
+        }  catch (DataIntegrityViolationException e) {
+            // TODO: User and FK
+            throw new DeleteDataIntegrityViolationException("Cannot delete User: " +
+                            "Must Delete all user Transactions or/and the user leaves the household");
+        }
     }
 
     public User saveUser(User user){
+        try {
+            return repository.save(user);
+        } catch (InvalidDataAccessApiUsageException e){
+            throw new NotEnteredForeignKeyIdException("body request should have: {id, name, role_id, household_id}");
 
-        Role role =  roleRepository.getRole(user.getRole().getId());
-        if(role != null) {
-            user.setRole(role);
-            return userRepository.save(user);
-        }  else {
-            throw new RuntimeException();
+        } catch (DataIntegrityViolationException e){
+            throw new NotFoundForeignKeyIdException("Not Found household ID or/and role (foreign key)");
+
         }
     }
 
     public User update(User user){
-      return   userRepository.save(user);
+        try {
+            return repository.save(user);
+
+        } catch (InvalidDataAccessApiUsageException e) {
+            throw new NotEnteredAllRequiredFieldException("body request should have: {id, name, role_id, household_id}");
+
+        } catch (DataIntegrityViolationException e){
+            throw new NotFoundForeignKeyIdException("Not Found household ID or/and role (foreign key)");
+        }
     }
 }
