@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity(name = "user_")
@@ -17,28 +19,34 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "transactions"})
+@JsonPropertyOrder({"id", "name", "role_name", "household", "transactions"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotEmpty
     private String name;
 
     @ManyToOne
     @JoinColumn(name = "role_id")
+    @JsonIncludeProperties("name")
+    @JsonUnwrapped(prefix = "role_")
+    @NotNull
     private Role role;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "household_id",
+            referencedColumnName = "id",
+            nullable = false)
+    @JsonIncludeProperties("id")
+    @JsonUnwrapped(prefix = "household_")
+    @NotNull
+    private Household household;
 
     @OneToMany(mappedBy = "user")
     private List<Transaction> transactions;
-
-    @ManyToOne
-    @JoinColumn(
-            name = "household_id",
-            referencedColumnName = "id")
-    @JsonIncludeProperties("id")
-    @JsonUnwrapped(prefix = "household_")
-    private Household household;
 }
 
    
