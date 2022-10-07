@@ -18,7 +18,7 @@ public class RoleRepository {
         roles.put(3,new Role(3,"Staff") ) ;
     }
 
-    public Role getRole(int id){
+    public Role getRole(short id){
         return roles.get(id);
     }
 }

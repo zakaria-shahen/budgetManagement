@@ -2,6 +2,7 @@ package com.myCompany.budgetManagement.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.AllArgsConstructor;
@@ -19,17 +20,18 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "name", "role_name", "household", "transactions"})
+@JsonPropertyOrder({"id", "name", "role", "household", "transactions"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     @NotEmpty
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "role_id")
+    @JoinColumn(name = "role_id", nullable = false)
     @JsonIncludeProperties("name")
     @JsonUnwrapped(prefix = "role_")
     @NotNull

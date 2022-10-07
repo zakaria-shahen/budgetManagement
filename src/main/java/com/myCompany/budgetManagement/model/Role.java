@@ -1,6 +1,5 @@
 package com.myCompany.budgetManagement.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,17 +13,21 @@ import javax.validation.constraints.NotEmpty;
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private byte id;
 
     @NotEmpty
     private String name;
 
     public Role() {}
+
+    public Role(int id, String name) {
+        this.id = (byte) id;
+        this.name = name;
+    }
 
     @AssertTrue(message = "Must be any of the following values {'staff', 'co-Owner', 'owner'}")
     private boolean isValid(){
