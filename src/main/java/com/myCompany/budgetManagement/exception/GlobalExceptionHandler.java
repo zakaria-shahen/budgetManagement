@@ -6,7 +6,6 @@ import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +16,6 @@ import java.net.ConnectException;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ErrorMessage> NotFoundHandler(HttpServletRequest request, Exception e) {
         var errorMassage = new ErrorMessage(
                 HttpStatus.NOT_FOUND,
@@ -26,8 +24,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorMassage, errorMassage.status());
     }
 
-    @ExceptionHandler(NotFoundForeignKeyIdException.class)
-    public ResponseEntity<ErrorMessage> NotFoundForeignKeyIdHandle(HttpServletRequest request, Exception e) {
+    @ExceptionHandler({NotFoundForeignKeyIdException.class, DeleteDataIntegrityViolationException.class})
+    public ResponseEntity<ErrorMessage> conflictHandler(HttpServletRequest request, Exception e) {
         var errorMassage = new ErrorMessage(
                 HttpStatus.CONFLICT,
                 e.getMessage(),
@@ -35,9 +33,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorMassage, errorMassage.status());
     }
 
-    @ExceptionHandler(NotEnteredForeignKeyIdException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ErrorMessage> NotEnteredForeignKeyIdHandle(HttpServletRequest request, Exception e) {
+    @ExceptionHandler({NotEnteredForeignKeyIdException.class, NotEnteredAllRequiredFieldException.class})
+    public ResponseEntity<ErrorMessage> badRequestHandler(HttpServletRequest request, Exception e) {
         var errorMassage = new ErrorMessage(
                 HttpStatus.BAD_REQUEST,
                 e.getMessage(),
@@ -56,11 +53,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ArgumentNotValidResponseBuilder>
         MethodArgumentNotValidHandler(HttpServletRequest request, MethodArgumentNotValidException e){
         var repo = new ArgumentNotValidResponseBuilder(request.getRequestURI(), HttpStatus.BAD_REQUEST, e);
         return repo.responseEntityBuild();
     }
+
+    // TODO: Add global Handler
 
 }
