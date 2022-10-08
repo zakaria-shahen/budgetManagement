@@ -40,6 +40,7 @@ public class ArgumentNotValidResponseBuilder {
         var errorsArrayString = e.stream()
                 .map(x -> List.of(x.getField(), x.getDefaultMessage()))
                 .flatMap(Collection::stream)
+                .
                 .toArray(String[]::new);
 
         var errorMap = new LinkedHashMap<String, String>();

@@ -60,5 +60,11 @@ public class GlobalExceptionHandler {
     }
 
     // TODO: Add global Handler
+    // public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+    // @Override
+    // protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    //     ErrorMessage message = new ErrorMessage(HttpStatus.BAD_REQUEST, "", headers.getLocation().getPath());
+    //     return ResponseEntity.status(message.status()).body(message);
+    // }
 }
