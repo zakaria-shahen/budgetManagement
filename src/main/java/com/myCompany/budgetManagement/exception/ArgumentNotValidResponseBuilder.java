@@ -7,8 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +27,7 @@ public class ArgumentNotValidResponseBuilder {
         this.message = messageBuilder(e.getObjectName(), e.getErrorCount());
     }
 
-    public ResponseEntity<ArgumentNotValidResponseBuilder> responseEntityBuild() {
+    public ResponseEntity<Object> BuildResponseEntity() {
         return new ResponseEntity<>(this, status);
     }
 
@@ -36,18 +35,9 @@ public class ArgumentNotValidResponseBuilder {
         return "Validation failed for object='%s'. Error count: %s".formatted(objectName, ErrorCount);
     }
 
-    private static LinkedHashMap<String, String> errorsBuilder(List<FieldError> e) {
-        var errorsArrayString = e.stream()
-                .map(x -> List.of(x.getField(), x.getDefaultMessage()))
-                .flatMap(Collection::stream)
-                .
-                .toArray(String[]::new);
-
-        var errorMap = new LinkedHashMap<String, String>();
-
-        for (int i = 0; i < errorsArrayString.length / 2; i++) {
-            errorMap.put(errorsArrayString[i], errorsArrayString[++i]);
-        }
+    private static Map<String, String> errorsBuilder(List<FieldError> e) {
+        var errorMap = new HashMap<String, String>();
+        e.forEach(x -> errorMap.put(x.getField(), x.getDefaultMessage()));
 
         return errorMap;
     }
