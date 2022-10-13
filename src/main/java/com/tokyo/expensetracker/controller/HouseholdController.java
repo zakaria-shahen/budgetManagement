@@ -68,7 +68,7 @@ public class HouseholdController {
     @PostMapping("/{householdId}/members/{userId}")
     public ResponseEntity<?> addMemberToHousehold(@PathVariable Long householdId, @PathVariable Long userId) {
         householdService.addMember(householdId, userId);
-        return new ResponseEntity<>( HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{householdId}/members/{memberId}")

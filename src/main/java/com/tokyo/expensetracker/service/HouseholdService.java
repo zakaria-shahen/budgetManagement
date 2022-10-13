@@ -1,5 +1,6 @@
 package com.tokyo.expensetracker.service;
 
+import com.tokyo.expensetracker.repository.RoleRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -20,10 +21,12 @@ public class HouseholdService {
 
     private HouseholdRepository householdRepository;
     private UserRepository userRepository;
+    private RoleRepository roleRepository;
 
-    public HouseholdService(HouseholdRepository householdRepository, UserRepository userRepository) {
+    public HouseholdService(HouseholdRepository householdRepository, UserRepository userRepository, RoleRepository roleRepository) {
         this.householdRepository = householdRepository;
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     public List<Household> findAll() {
@@ -44,7 +47,11 @@ public class HouseholdService {
 
     public Household create(Household household) {
         try {
-           return householdRepository.save(household);
+            User owner = household.getMembers().get(0);
+            owner.setRole(roleRepository.getRole((short) 1));
+            owner.setHousehold(household);
+            userRepository.save(owner);
+            return householdRepository.save(household);
         } catch (InvalidDataAccessApiUsageException | DataIntegrityViolationException e){
             throw new NotEnteredForeignKeyIdException("body request should have: {name, totalBalance}");
         }
@@ -73,6 +80,10 @@ public class HouseholdService {
             throw new DeleteDataIntegrityViolationException("Cannot delete household: " +
                     "Must Delete all Transactions or/and the all Members leaves the household");
         }
+    }
+
+    public void deleteAll() {
+        householdRepository.deleteAll();
     }
 
     // ---------------------------------------------------------------------------
