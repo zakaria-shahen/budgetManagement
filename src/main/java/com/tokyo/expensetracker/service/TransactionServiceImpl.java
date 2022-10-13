@@ -1,7 +1,6 @@
 package com.tokyo.expensetracker.service;
 
 import com.tokyo.expensetracker.exception.InsufficientFundsException;
-import com.tokyo.expensetracker.exception.NotEnteredForeignKeyIdException;
 import com.tokyo.expensetracker.exception.NotFoundException;
 import com.tokyo.expensetracker.exception.NotFoundForeignKeyIdException;
 import com.tokyo.expensetracker.model.Transaction;
@@ -46,12 +45,6 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public Transaction save(Transaction transaction) {
-        if (transaction.getHousehold().getId() == null){
-            throw new NotEnteredForeignKeyIdException("Must add household ID (Foreign Key)");
-
-        } else if (transaction.getUser().getId() == null) {
-            throw new NotEnteredForeignKeyIdException("Must add User ID (Foreign Key)");
-        }
 
         updateTotalBalance(transaction);
 

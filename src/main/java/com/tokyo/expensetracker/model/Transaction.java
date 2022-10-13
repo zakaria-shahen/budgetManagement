@@ -5,8 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.context.annotation.Bean;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -35,7 +38,6 @@ public class Transaction {
             nullable = false)
     @JsonIncludeProperties("id")
     @JsonUnwrapped(prefix = "user_")
-    @NotNull
     private User user;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
@@ -45,7 +47,6 @@ public class Transaction {
             nullable = false)
     @JsonIncludeProperties("id")
     @JsonUnwrapped(prefix = "household_")
-    @NotNull
     private Household household;
 
     @NotEmpty
@@ -63,4 +64,17 @@ public class Transaction {
         WITHDRAW,
         DEPOSIT,
     }
+
+    // NOTE: DON'T delete 'get' from beginning of method name
+    @AssertTrue(message = "Must add User ID (Foreign Key)")
+    public Boolean getValidationResultForUserId() {
+        return user.getId() != null;
+    }
+
+    // NOTE: DON'T delete 'get' from beginning of method name
+    @AssertTrue(message = "Must add Household ID (Foreign Key)")
+    public Boolean getValidationResultForHouseHoldId() {
+        return household.getId() != null;
+    }
+
 }
