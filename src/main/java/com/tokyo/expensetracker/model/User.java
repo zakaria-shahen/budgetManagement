@@ -52,4 +52,9 @@ public class User {
     public boolean getValidationResultForHouseholdId(){
         return household.getId() != null;
     }
+
+    public User(long id) {
+        this.id = id;
+    }
+
 }

@@ -5,10 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.context.annotation.Bean;
 
 import javax.persistence.*;
-import javax.validation.Valid;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
@@ -67,14 +65,25 @@ public class Transaction {
 
     // NOTE: DON'T delete 'get' from beginning of method name
     @AssertTrue(message = "Must add User ID (Foreign Key)")
+    @JsonIgnore
     public Boolean getValidationResultForUserId() {
         return user.getId() != null;
     }
 
     // NOTE: DON'T delete 'get' from beginning of method name
     @AssertTrue(message = "Must add Household ID (Foreign Key)")
+    @JsonIgnore
     public Boolean getValidationResultForHouseHoldId() {
         return household.getId() != null;
     }
 
+
+    public Transaction(Long id, BigDecimal amount, Type type, String memo, User user, Household household) {
+        this.id = id;
+        this.amount = amount;
+        this.type = type;
+        this.memo = memo;
+        this.user = user;
+        this.household = household;
+    }
 }

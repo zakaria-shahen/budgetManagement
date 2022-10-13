@@ -1,12 +1,11 @@
 package com.tokyo.expensetracker.controller;
 
 
+import com.tokyo.expensetracker.model.Transaction;
+import com.tokyo.expensetracker.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import com.tokyo.expensetracker.model.Transaction;
-import com.tokyo.expensetracker.service.TransactionService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -18,7 +17,6 @@ public class TransactionController {
 
     private TransactionService service;
 
-    @Autowired
     public TransactionController(TransactionService service) {
         this.service = service;
     }
@@ -48,13 +46,13 @@ public class TransactionController {
     @DeleteMapping
     public Map<String, String> delete() {
         service.deleteAll();
-        return Map.of("massage", "resource deleted successfully");
+        return Map.of("massage", "resources deleted successfully");
     }
 
     @DeleteMapping("{id}")
     public Map<String, String> deleteByID(@PathVariable Long id) {
         service.deleteById(id);
-        return Map.of("massage", "resources deleted successfully");
+        return Map.of("massage", "resource deleted successfully");
     }
 
 }
