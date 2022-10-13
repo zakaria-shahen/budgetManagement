@@ -16,7 +16,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import javax.servlet.http.HttpServletRequest;
 import java.net.ConnectException;
 
-@ControllerAdvice(basePackages = "com.myCompany.budgetManagement")
+@ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
@@ -66,7 +66,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ).BuildResponseEntity();
     }
 
-    @ExceptionHandler({NotFoundForeignKeyIdException.class, DeleteDataIntegrityViolationException.class})
+    @ExceptionHandler({
+            NotFoundForeignKeyIdException.class,
+            DeleteDataIntegrityViolationException.class,
+            InsufficientFundsException.class
+    })
     public ResponseEntity<?> conflictHandler(HttpServletRequest request, Exception e) {
         return new ErrorMessage(
                 HttpStatus.CONFLICT,
@@ -93,7 +97,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ).BuildResponseEntity();
     }
 
-    @ExceptionHandler(Exception.class)
+    // @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleOther(HttpServletRequest request, Exception e) {
         return new ErrorMessage(
                 HttpStatus.BAD_REQUEST,

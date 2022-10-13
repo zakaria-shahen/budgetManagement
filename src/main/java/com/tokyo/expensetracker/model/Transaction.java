@@ -26,7 +26,7 @@ public class Transaction {
 
     @Enumerated(EnumType.STRING)
     @NotNull
-    private TransactionTypeEnum type;
+    private Type type;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(
@@ -58,4 +58,9 @@ public class Transaction {
     @JsonFormat(pattern = "dd-mm-yyyy hh:mm")
     private LocalDateTime date = LocalDateTime.now();
 
+
+    public enum Type {
+        WITHDRAW,
+        DEPOSIT,
+    }
 }
