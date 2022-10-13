@@ -1,9 +1,7 @@
 package com.tokyo.expensetracker.controller;
 
-import java.net.URI;
 import java.util.List;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.tokyo.expensetracker.model.Household;
 import com.tokyo.expensetracker.model.User;
@@ -24,7 +21,7 @@ import com.tokyo.expensetracker.service.HouseholdService;
 @RequestMapping("/api/v1/households")
 public class HouseholdController {
 
-    private HouseholdService householdService;
+    private final HouseholdService householdService;
 
     public HouseholdController(HouseholdService householdService) {
         this.householdService = householdService;
@@ -68,20 +65,10 @@ public class HouseholdController {
         return new ResponseEntity<>(allMembers, HttpStatus.OK);
     }
 
-    @PostMapping("/{householdId}/members")
-    public ResponseEntity<?> addMemberToHousehold(@PathVariable Long householdId, @RequestBody Long memberId) {
-        householdService.addMember(householdId, memberId);
-
-        // Set the location header for the newly created Member
-        HttpHeaders responseHeaders = new HttpHeaders();
-        URI newMemberlUri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(memberId)
-                .toUri();
-        responseHeaders.setLocation(newMemberlUri);
-
-        return new ResponseEntity<>(responseHeaders, HttpStatus.CREATED);
+    @PostMapping("/{householdId}/members/{userId}")
+    public ResponseEntity<?> addMemberToHousehold(@PathVariable Long householdId, @PathVariable Long userId) {
+        householdService.addMember(householdId, userId);
+        return new ResponseEntity<>( HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{householdId}/members/{memberId}")

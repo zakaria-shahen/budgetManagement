@@ -27,7 +27,7 @@ public class UserService {
 
     public User findUserById(Long id ){
         return repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Not Found User"));
+                .orElseThrow(() -> new NotFoundException("User not found with id = " + id));
     }
 
     public void deleteUser(Long id){
