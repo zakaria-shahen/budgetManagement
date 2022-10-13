@@ -9,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotEmpty;
-import java.util.Locale;
 
 @Entity
 @Getter
@@ -18,15 +17,15 @@ public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private byte id;
+    private Long id;
 
     @NotEmpty
     private String name;
 
     public Role() {}
 
-    public Role(int id, String name) {
-        this.id = (byte) id;
+    public Role(Long id, String name) {
+        this.id = id;
         this.name = name.toLowerCase();
     }
 
