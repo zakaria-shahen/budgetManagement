@@ -24,6 +24,10 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private TransactionTypeEnum type;
+
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(
             name = "user_id",
