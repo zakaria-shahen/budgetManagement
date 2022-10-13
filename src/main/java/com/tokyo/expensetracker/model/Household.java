@@ -41,7 +41,6 @@ public class Household {
     private BigDecimal monthlyDeposits;
 
     @OneToMany(mappedBy = "household")
-    @Min(1)
     private List<User> members;
 
     @OneToMany(mappedBy = "household")
@@ -52,5 +51,5 @@ public class Household {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     private String greetingMsg;
-    private String invitationCode = name;
+    private String invitationCode;
 }

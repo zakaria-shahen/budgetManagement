@@ -47,10 +47,6 @@ public class HouseholdService {
 
     public Household create(Household household) {
         try {
-            User owner = household.getMembers().get(0);
-            owner.setRole(roleRepository.getRole((short) 1));
-            owner.setHousehold(household);
-            userRepository.save(owner);
             return householdRepository.save(household);
         } catch (InvalidDataAccessApiUsageException | DataIntegrityViolationException e){
             throw new NotEnteredForeignKeyIdException("body request should have: {name, totalBalance}");
@@ -78,10 +74,11 @@ public class HouseholdService {
         } catch (DataIntegrityViolationException e) {
             // TODO: household and FK
             throw new DeleteDataIntegrityViolationException("Cannot delete household: " +
-                    "Must Delete all Transactions or/and the all Members leaves the household");
+                    "Must Delete all Transactions or/and all Members leave the household");
         }
     }
 
+    // Used for testing
     public void deleteAll() {
         householdRepository.deleteAll();
     }
@@ -108,6 +105,8 @@ public class HouseholdService {
     }
 
     // TODO: use UserService instead
+    // This implementation is not good, because it will change the user even if the user is not a member of the household
+    // maybe use isMember() method
     public void deleteMember(Long householdId, Long memberId) {
         Household household = findById(householdId);
         User member = userRepository
