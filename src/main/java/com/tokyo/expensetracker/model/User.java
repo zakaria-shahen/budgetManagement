@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -45,4 +47,14 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Transaction> transactions;
+
+    @AssertTrue(message = "Must add User ID (Foreign Key)")
+    public boolean getValidationResultForHouseholdId(){
+        return household.getId() != null;
+    }
+
+    public User(long id) {
+        this.id = id;
+    }
+
 }

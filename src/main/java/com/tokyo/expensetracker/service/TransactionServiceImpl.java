@@ -1,16 +1,13 @@
 package com.tokyo.expensetracker.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
-import org.springframework.stereotype.Service;
-
-import com.tokyo.expensetracker.exception.NotEnteredForeignKeyIdException;
+import com.tokyo.expensetracker.exception.InsufficientFundsException;
 import com.tokyo.expensetracker.exception.NotFoundException;
 import com.tokyo.expensetracker.exception.NotFoundForeignKeyIdException;
 import com.tokyo.expensetracker.model.Transaction;
 import com.tokyo.expensetracker.repository.TransactionRepository;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -18,10 +15,11 @@ import java.util.List;
 public class TransactionServiceImpl implements TransactionService {
 
     TransactionRepository repository;
+    HouseholdService householdService;
 
-    @Autowired
-    public TransactionServiceImpl(TransactionRepository repository) {
+    public TransactionServiceImpl(TransactionRepository repository, HouseholdService householdService) {
         this.repository = repository;
+        this.householdService = householdService;
     }
 
     @Override
@@ -47,14 +45,18 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public Transaction save(Transaction transaction) {
+
+        householdService.updateTotalBalance(
+                transaction.getAmount(),
+                transaction.getHousehold().getId(),
+                transaction.getType()
+        );
+
         try {
             return repository.save(transaction);
-        } catch (DataIntegrityViolationException e) {
-            // if (e.getCause() instanceof ConstraintViolationException)
-           throw new NotFoundForeignKeyIdException("Not Found User ID or/and household ID (Foreign Key)");
-        } catch (InvalidDataAccessApiUsageException e){
-            throw new NotEnteredForeignKeyIdException("Must add User ID or/and household ID (Foreign Key)");
 
+        } catch (DataIntegrityViolationException e) {
+           throw new NotFoundForeignKeyIdException("Not Found User ID (Foreign Key)");
         }
     }
 
@@ -71,4 +73,5 @@ public class TransactionServiceImpl implements TransactionService {
              throw new NotFoundException("Not Found Resource (Transaction)");
         }
     }
+
 }

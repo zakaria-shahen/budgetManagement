@@ -52,4 +52,8 @@ public class Household {
 
     private String greetingMsg;
     private String invitationCode;
+
+    public Household(Long id) {
+        this.id = id;
+    }
 }
