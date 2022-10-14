@@ -46,7 +46,11 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public Transaction save(Transaction transaction) {
 
-        updateTotalBalance(transaction);
+        householdService.updateTotalBalance(
+                transaction.getAmount(),
+                transaction.getHousehold().getId(),
+                transaction.getType()
+        );
 
         try {
             return repository.save(transaction);
@@ -68,29 +72,6 @@ public class TransactionServiceImpl implements TransactionService {
         } catch (EmptyResultDataAccessException e) {
              throw new NotFoundException("Not Found Resource (Transaction)");
         }
-    }
-
-
-    private void updateTotalBalance(Transaction transaction) {
-
-        var household = householdService.findById(transaction.getHousehold().getId());
-        var totalBalance = household.getTotalBalance();
-
-        if (transaction.getType() == Transaction.Type.WITHDRAW) {
-
-            if (0 > totalBalance.compareTo(transaction.getAmount())) {
-                throw new InsufficientFundsException("Your Total balance is less then Transaction amount.");
-            }
-
-            totalBalance = totalBalance.subtract(transaction.getAmount());
-
-        } else if (transaction.getType() == Transaction.Type.DEPOSIT) {
-
-            totalBalance = totalBalance.add(transaction.getAmount());
-        }
-
-        household.setTotalBalance(totalBalance);
-
     }
 
 }

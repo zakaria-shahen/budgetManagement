@@ -1,5 +1,7 @@
 package com.tokyo.expensetracker.service;
 
+import com.tokyo.expensetracker.exception.InsufficientFundsException;
+import com.tokyo.expensetracker.model.Transaction;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -13,6 +15,7 @@ import com.tokyo.expensetracker.model.User;
 import com.tokyo.expensetracker.repository.HouseholdRepository;
 import com.tokyo.expensetracker.repository.UserRepository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -108,6 +111,29 @@ public class HouseholdService {
 
         householdRepository.save(household);
         userRepository.save(member);
+    }
+
+
+    protected void updateTotalBalance(BigDecimal amount, Long householdId, Transaction.Type type) {
+
+        var household = findById(householdId);
+        var totalBalance = household.getTotalBalance();
+
+        if (type == Transaction.Type.WITHDRAW) {
+
+            if (0 > totalBalance.compareTo(amount)) {
+                throw new InsufficientFundsException("Your Total balance is less then Transaction amount.");
+            }
+
+            totalBalance = totalBalance.subtract(amount);
+
+        } else if (type == Transaction.Type.DEPOSIT) {
+
+            totalBalance = totalBalance.add(amount);
+        }
+
+        household.setTotalBalance(totalBalance);
+
     }
 
 }
