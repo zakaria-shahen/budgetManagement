@@ -18,15 +18,15 @@ public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private byte id;
+    private Long id;
 
     @NotEmpty
     private String name;
 
     public Role() {}
 
-    public Role(int id, String name) {
-        this.id = (byte) id;
+    public Role(Long id, String name) {
+        this.id = id;
         this.name = name.toLowerCase();
     }
 

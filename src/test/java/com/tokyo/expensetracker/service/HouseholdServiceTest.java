@@ -33,6 +33,7 @@ class HouseholdServiceTest {
     
     @AfterEach
     void tearDown() {
+        userService.deleteAll();
         householdService.deleteAll();
     }
 
@@ -225,11 +226,11 @@ class HouseholdServiceTest {
             User user1 = new User();
             user1.setName("User");
             user1.setHousehold(household);
-            user1.setRole(roleRepository.getRole((short) 2));
+            user1.setRole(roleRepository.findByName("co-owner").get());
             User user2 = new User();
             user2.setName("User2");
             user1.setHousehold(household);
-            user1.setRole(roleRepository.getRole((short) 2));
+            user1.setRole(roleRepository.findByName("member").get());
             userService.saveUser(user1);
             userService.saveUser(user2);
 
@@ -260,7 +261,7 @@ class HouseholdServiceTest {
             User user = new User();
             user.setName("User");
             user.setHousehold(household);
-            user.setRole(roleRepository.getRole((short) 3));
+            user.setRole(roleRepository.findByName("owner").get());
             userService.saveUser(user);
 
             householdService.addMember(household.getId(), user.getId());

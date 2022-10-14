@@ -65,4 +65,8 @@ public class UserService {
             throw new NotFoundForeignKeyIdException("Not Found household ID or/and role (foreign key)");
         }
     }
+
+    public void deleteAll() {
+        repository.deleteAll();
+    }
 }
