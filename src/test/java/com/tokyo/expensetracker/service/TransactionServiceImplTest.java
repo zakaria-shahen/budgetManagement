@@ -10,11 +10,12 @@ import com.tokyo.expensetracker.repository.TransactionRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -23,16 +24,16 @@ import java.util.function.Consumer;
 
 import static org.mockito.BDDMockito.*;
 
-@WebMvcTest(TransactionService.class)
+@ExtendWith(SpringExtension.class)
 class TransactionServiceImplTest {
 
-    @MockBean
+    @Mock
     private TransactionRepository transactionRepository;
 
-    @MockBean
+    @Mock
     private HouseholdService householdService;
 
-    @Autowired
+    @InjectMocks
     private TransactionServiceImpl transactionService;
     private final Transaction transaction = new Transaction(
             1L,
@@ -100,7 +101,7 @@ class TransactionServiceImplTest {
     @Nested
     class save {
 
-        private final TransactionServiceImpl spyTransactionServiceImpl = spy(new TransactionServiceImpl(transactionRepository, householdService));
+        private final TransactionServiceImpl spyTransactionServiceImpl = spy(transactionService);
 
         @Test
         void saveMethod() {
@@ -170,7 +171,8 @@ class TransactionServiceImplTest {
 
         @Test
         void deleteByIdWithException() {
-            willThrow(EmptyResultDataAccessException.class).given(transactionRepository).deleteById(0L);
+            willThrow(EmptyResultDataAccessException.class)
+                    .given(transactionRepository).deleteById(0L);
 
             Assertions.assertThrows(NotFoundException.class, () -> transactionService.deleteById(0L));
 
