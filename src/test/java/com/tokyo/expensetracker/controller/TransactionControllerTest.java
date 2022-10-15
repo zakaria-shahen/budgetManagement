@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -48,16 +48,16 @@ class TransactionControllerTest {
 
     @Test
     void getAllTransactions() throws Exception {
-        when(transactionService.findAll()).thenReturn(List.of());
-        mockMvc.perform(get(path).contentType(MediaType.APPLICATION_JSON.toString()))
+        given(transactionService.findAll()).willReturn(List.of());
+        mockMvc.perform(get(path).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verify(transactionService, times(1)).findAll();
+        then(transactionService).should().findAll();
     }
 
     @Test
     void getAllByUserID() throws Exception {
-        when(transactionService.findAllByUser(1L)).thenReturn(transactionList);
+        given(transactionService.findAllByUser(1L)).willReturn(transactionList);
 
         var responseBody = mockMvc.perform(get(path)
                         .param("user_id", "1")
@@ -65,7 +65,7 @@ class TransactionControllerTest {
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        verify(transactionService, times(1)).findAllByUser(1L);
+        then(transactionService).should().findAllByUser(1L);
 
         Assertions.assertEquals(
                 objectMapper.writeValueAsString(transactionList),
@@ -75,24 +75,24 @@ class TransactionControllerTest {
 
     @Test
     void getById() throws Exception {
-        when(transactionService.findById(1L)).thenReturn(transaction);
+        given(transactionService.findById(1L)).willReturn(transaction);
 
         var response = mockMvc.perform(get(path + 1).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isFound())
                 .andReturn().getResponse().getContentAsString();
 
-        verify(transactionService, times(1)).findById(1L);
+        then(transactionService).should().findById(1L);
 
         Assertions.assertEquals(
-                response,
-                objectMapper.writeValueAsString(transaction)
+                objectMapper.writeValueAsString(transaction),
+                response
         );
 
     }
 
     @Test
     void postTransaction() throws Exception {
-        when(transactionService.save(any(Transaction.class))).thenReturn(transaction);
+        given(transactionService.save(any(Transaction.class))).willReturn(transaction);
 
         var response = mockMvc.perform(
                         post(path)
@@ -101,7 +101,7 @@ class TransactionControllerTest {
                 ).andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString();
 
-        verify(transactionService, times(1)).save(any(Transaction.class));
+        then(transactionService).should().save(any(Transaction.class));
 
         Assertions.assertEquals(
                 objectMapper.writeValueAsString(transaction),
@@ -111,14 +111,14 @@ class TransactionControllerTest {
 
     @Test
     void deleteTransaction() throws Exception {
-        doNothing().when(transactionService).deleteById(1L);
+        willDoNothing().given(transactionService).deleteById(1L);
 
         var response = mockMvc.perform(
                         delete(path + 1).contentType(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isOk())
                  .andReturn().getResponse().getContentAsString();
 
-        verify(transactionService, times(1)).deleteById(1L);
+        then(transactionService).should().deleteById(1L);
 
         Assertions.assertEquals(
                 "{\"massage\":\"resource deleted successfully\"}",

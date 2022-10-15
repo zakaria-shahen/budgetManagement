@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -19,10 +19,11 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 
-@SpringBootTest
+@WebMvcTest(TransactionService.class)
 class TransactionServiceImplTest {
 
     @MockBean
@@ -47,94 +48,93 @@ class TransactionServiceImplTest {
 
     @Test
     void findById() {
-        when(transactionRepository.findById(1L)).thenReturn(Optional.of(transaction));
+        given(transactionRepository.findById(1L)).willReturn(Optional.of(transaction));
 
         Transaction output = transactionService.findById(1L);
-
-        verify(transactionRepository, times(1)).findById(1L);
+        
+        then(transactionRepository).should().findById(1L);
 
         Assertions.assertEquals(transaction, output);
     }
 
     @Test
     void findByIdWithException() {
-        when(transactionRepository.findById(1L)).thenReturn(Optional.empty());
+        given(transactionRepository.findById(1L)).willReturn(Optional.empty());
 
         Assertions.assertThrows(NotFoundException.class, () -> transactionService.findById(1L));
 
-        verify(transactionRepository, times(1)).findById(1L);
+        then(transactionRepository).should().findById(1L);
 
     }
 
     @Test
     void findAll() {
-        when(transactionRepository.findAll()).thenReturn(transactionList);
+        given(transactionRepository.findAll()).willReturn(transactionList);
 
         Assertions.assertEquals(transactionService.findAll(), transactionList);
 
-        verify(transactionRepository, times(1)).findAll();
+        then(transactionRepository).should().findAll();
 
     }
 
     @Test
     void findAllByUser() {
-        when(transactionRepository.findByUserId(0L)).thenReturn(transactionList);
+        given(transactionRepository.findByUserId(0L)).willReturn(transactionList);
 
         Assertions.assertEquals(transactionService.findAllByUser(0L), transactionList);
 
-        verify(transactionRepository, times(1)).findByUserId(0L);
+        then(transactionRepository).should().findByUserId(0L);
 
     }
 
     @Test
     void findAllByHousehold() {
-        when(transactionRepository.findByHouseholdId(0L)).thenReturn(transactionList);
+        given(transactionRepository.findByHouseholdId(0L)).willReturn(transactionList);
 
         Assertions.assertEquals(transactionService.findAllByHousehold(0L), transactionList);
 
-        verify(transactionRepository, times(1)).findByHouseholdId(0L);
+        then(transactionRepository).should().findByHouseholdId(0L);
 
     }
 
     @Nested
     class save {
 
+        private final TransactionServiceImpl spyTransactionServiceImpl = spy(new TransactionServiceImpl(transactionRepository, householdService));
+
         @Test
         void saveMethod() {
 
-            var spyTransactionServiceImpl = spy(new TransactionServiceImpl(transactionRepository, householdService));
-
-            doNothing().when(spyTransactionServiceImpl).updateTotalBalance(
+             willDoNothing().given(spyTransactionServiceImpl).updateTotalBalance(
                     transaction.getAmount(),
                     household.getId(),
                     transaction.getType()
             );
 
-            when(transactionRepository.save(transaction)).thenReturn(transaction);
-            when(householdService.findById(household.getId()))
-                    .thenReturn(household);
+            given(transactionRepository.save(transaction)).willReturn(transaction);
+            given(householdService.findById(household.getId()))
+                    .willReturn(household);
 
             Assertions.assertEquals(spyTransactionServiceImpl.save(transaction), transaction);
 
-            verify(spyTransactionServiceImpl, times(1)).updateTotalBalance(
+            then(spyTransactionServiceImpl).should().updateTotalBalance(
                     transaction.getAmount(),
                     household.getId(),
                     transaction.getType()
             );
 
-            verify(transactionRepository, times(1)).save(transaction);
+            then(transactionRepository).should().save(transaction);
 
 
         }
 
         @Test
         void saveWithNotFoundForeignKeyIdException() {
-            var spy = spy(new TransactionServiceImpl(transactionRepository, householdService));
 
-            doThrow(DataIntegrityViolationException.class)
-                    .when(transactionRepository).save(transaction);
+            willThrow(DataIntegrityViolationException.class)
+                    .given(transactionRepository).save(transaction);
 
-            doNothing().when(spy).updateTotalBalance(
+            willDoNothing().given(spyTransactionServiceImpl).updateTotalBalance(
                     transaction.getAmount(),
                     household.getId(),
                     transaction.getType()
@@ -142,12 +142,12 @@ class TransactionServiceImplTest {
 
             Assertions.assertThrows(
                     NotFoundForeignKeyIdException.class,
-                    () -> spy.save(transaction)
+                    () -> spyTransactionServiceImpl.save(transaction)
             );
 
-            verify(spy, times(1)).save(transaction);
+            then(spyTransactionServiceImpl).should().save(transaction);
 
-            verify(spy, times(1)).updateTotalBalance(
+            then(spyTransactionServiceImpl).should().updateTotalBalance(
                     transaction.getAmount(),
                     household.getId(),
                     transaction.getType()
@@ -160,21 +160,21 @@ class TransactionServiceImplTest {
     class deleteBy {
         @Test
         void deleteById() {
-            doNothing().when(transactionRepository).deleteById(0L);
+            willDoNothing().given(transactionRepository).deleteById(0L);
 
             transactionService.deleteById(0L);
 
-            verify(transactionRepository, times(1)).deleteById(0L);
+            then(transactionRepository).should().deleteById(0L);
 
         }
 
         @Test
         void deleteByIdWithException() {
-            doThrow(EmptyResultDataAccessException.class).when(transactionRepository).deleteById(0L);
+            willThrow(EmptyResultDataAccessException.class).given(transactionRepository).deleteById(0L);
 
             Assertions.assertThrows(NotFoundException.class, () -> transactionService.deleteById(0L));
 
-            verify(transactionRepository, times(1)).deleteById(0L);
+            then(transactionRepository).should().deleteById(0L);
 
         }
     }
@@ -182,21 +182,22 @@ class TransactionServiceImplTest {
     @Nested
     class updateTotalBalance {
 
+        private final Consumer<Transaction> updateTotalBalance = t -> transactionService.updateTotalBalance(
+                t.getAmount(),
+                t.getHousehold().getId(),
+                t.getType()
+        );
 
         @Test
         void updateTotalBalanceTypeDeposit() {
             var totalBalance = household.getTotalBalance();
             transaction.setType(Transaction.Type.DEPOSIT);
 
-            when(householdService.findById(1L)).thenReturn(household);
+            given(householdService.findById(1L)).willReturn(household);
 
-            transactionService.updateTotalBalance(
-                    transaction.getAmount(),
-                    household.getId(),
-                    transaction.getType()
-            );
+            updateTotalBalance.accept(transaction);
 
-            verify(householdService, times(1))
+            then(householdService).should()
                     .findById(1L);
 
             Assertions.assertEquals(
@@ -212,15 +213,11 @@ class TransactionServiceImplTest {
             transaction.setType(Transaction.Type.WITHDRAW);
             var totalBalance = household.getTotalBalance();
 
-            when(householdService.findById(1L)).thenReturn(household);
+            given(householdService.findById(1L)).willReturn(household);
 
-            transactionService.updateTotalBalance(
-                    transaction.getAmount(),
-                    household.getId(),
-                    transaction.getType()
-            );
+            updateTotalBalance.accept(transaction);
 
-            verify(householdService, times(1)).findById(1L);
+            then(householdService).should().findById(1L);
 
             Assertions.assertEquals(
                     totalBalance.subtract(transaction.getAmount()),
@@ -234,16 +231,13 @@ class TransactionServiceImplTest {
             transaction.setType(Transaction.Type.WITHDRAW);
             transaction.setAmount(totalBalance.add(BigDecimal.ONE));
 
-            when(householdService.findById(1L)).thenReturn(household);
+            given(householdService.findById(1L)).willReturn(household);
 
             Assertions.assertThrows(InsufficientFundsException.class, () ->
-                    transactionService.updateTotalBalance(
-                            transaction.getAmount(),
-                            household.getId(),
-                            transaction.getType()
-                    ));
+                    updateTotalBalance.accept(transaction)
+            );
 
-            verify(householdService, times(1)).findById(1L);
+            then(householdService).should().findById(1L);
 
             Assertions.assertEquals(
                     totalBalance,
@@ -251,6 +245,7 @@ class TransactionServiceImplTest {
             );
 
         }
+
 
 
     }
