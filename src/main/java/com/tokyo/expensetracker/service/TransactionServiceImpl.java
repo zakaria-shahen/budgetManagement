@@ -9,13 +9,14 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
 
-    TransactionRepository repository;
-    HouseholdService householdService;
+    private TransactionRepository repository;
+    private HouseholdService householdService;
 
     public TransactionServiceImpl(TransactionRepository repository, HouseholdService householdService) {
         this.repository = repository;
@@ -46,7 +47,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public Transaction save(Transaction transaction) {
 
-        householdService.updateTotalBalance(
+        updateTotalBalance(
                 transaction.getAmount(),
                 transaction.getHousehold().getId(),
                 transaction.getType()
@@ -72,6 +73,28 @@ public class TransactionServiceImpl implements TransactionService {
         } catch (EmptyResultDataAccessException e) {
              throw new NotFoundException("Not Found Resource (Transaction)");
         }
+    }
+
+    protected void updateTotalBalance(BigDecimal amount, Long householdId, Transaction.Type type) {
+
+        var household = householdService.findById(householdId);
+        var totalBalance = household.getTotalBalance();
+
+        if (type == Transaction.Type.WITHDRAW) {
+
+            if (0 > totalBalance.compareTo(amount)) {
+                throw new InsufficientFundsException("Your Total balance is less then Transaction amount.");
+            }
+
+            totalBalance = totalBalance.subtract(amount);
+
+        } else if (type == Transaction.Type.DEPOSIT) {
+
+            totalBalance = totalBalance.add(amount);
+        }
+
+        household.setTotalBalance(totalBalance);
+
     }
 
 }

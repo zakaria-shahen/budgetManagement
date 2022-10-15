@@ -56,4 +56,9 @@ public class Household {
     public Household(Long id) {
         this.id = id;
     }
+
+    public Household(Long id, BigDecimal totalBalance) {
+        this.id = id;
+        this.totalBalance = totalBalance;
+    }
 }
