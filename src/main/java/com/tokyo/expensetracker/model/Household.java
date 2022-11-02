@@ -20,7 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonPropertyOrder({
-        "id", "name", "totalBalance", "monthlySpendings",
+        "id", "name", "totalBalance", "monthlySpending",
         "monthlyDeposits", "members",  "transactions",
         "createdAt", "greetingMsg", "invitationCode"
 })
@@ -36,7 +36,7 @@ public class Household {
     @PositiveOrZero
     private BigDecimal totalBalance;
     @PositiveOrZero
-    private BigDecimal monthlySpendings;
+    private BigDecimal monthlySpending;
     @PositiveOrZero
     private BigDecimal monthlyDeposits;
 
