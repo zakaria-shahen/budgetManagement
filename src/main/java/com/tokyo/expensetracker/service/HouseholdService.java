@@ -5,7 +5,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Service;
-
 import com.tokyo.expensetracker.exception.DeleteDataIntegrityViolationException;
 import com.tokyo.expensetracker.exception.NotEnteredForeignKeyIdException;
 import com.tokyo.expensetracker.exception.NotFoundException;
@@ -13,7 +12,6 @@ import com.tokyo.expensetracker.model.Household;
 import com.tokyo.expensetracker.model.User;
 import com.tokyo.expensetracker.repository.HouseholdRepository;
 import com.tokyo.expensetracker.repository.UserRepository;
-
 import java.util.List;
 
 @Service
@@ -21,12 +19,12 @@ public class HouseholdService {
 
     private HouseholdRepository householdRepository;
     private UserRepository userRepository;
-    private RoleRepository roleRepository;
+//    private RoleRepository roleRepository;
 
     public HouseholdService(HouseholdRepository householdRepository, UserRepository userRepository, RoleRepository roleRepository) {
         this.householdRepository = householdRepository;
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
+//        this.roleRepository = roleRepository;
     }
 
     public List<Household> findAll() {

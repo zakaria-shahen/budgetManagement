@@ -31,11 +31,12 @@ create table user_
 create table `transaction`
 (
     id           bigint auto_increment primary key,
+    type         enum('WITHDRAW', 'DEPOSIT'),
     amount       decimal(19, 2) not null check(amount > 0),
     date         datetime       not null default CURRENT_TIMESTAMP,
     memo         varchar(255)   not null,
-    household_id bigint         ,
-    user_id      bigint         ,
+    household_id bigint,
+    user_id      bigint,
     foreign key (household_id) references household (id),
     foreign key (user_id) references user_ (id)
 );

@@ -52,4 +52,13 @@ public class Household {
 
     private String greetingMsg;
     private String invitationCode;
+
+    public Household(Long id) {
+        this.id = id;
+    }
+
+    public Household(Long id, BigDecimal totalBalance) {
+        this.id = id;
+        this.totalBalance = totalBalance;
+    }
 }
