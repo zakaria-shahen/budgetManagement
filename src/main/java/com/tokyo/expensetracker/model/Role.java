@@ -1,6 +1,8 @@
 package com.tokyo.expensetracker.model;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
@@ -9,25 +11,24 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotEmpty;
-import java.util.Locale;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@JsonPropertyOrder({"id", "name"})
 public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Byte id;
 
     @NotEmpty
     private String name;
 
-    public Role() {}
-
-    public Role(Long id, String name) {
-        this.id = id;
-        this.name = name.toLowerCase();
+    protected Role(int id, String name) {
+        this.id = (byte) id;
+        this.name = name;
     }
 
     public Role(String name) {
