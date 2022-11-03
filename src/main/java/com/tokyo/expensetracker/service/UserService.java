@@ -5,8 +5,8 @@ import com.tokyo.expensetracker.exception.NotFoundForeignKeyIdException;
 import com.tokyo.expensetracker.model.Household;
 import com.tokyo.expensetracker.model.User;
 import com.tokyo.expensetracker.repository.UserRepository;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
@@ -16,9 +16,11 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository repository;
+    private final HouseholdService householdService;
 
-    public UserService(UserRepository repository) {
+    public UserService(UserRepository repository, @Lazy HouseholdService householdService) {
         this.repository = repository;
+        this.householdService = householdService;
     }
 
     public List<User> getAllUser(){
@@ -31,11 +33,18 @@ public class UserService {
     }
 
     public void deleteUser(Long id){
-        try {
-            repository.deleteById(id);
-        } catch (EmptyResultDataAccessException e){
-            throw new NotFoundException("Not Found User");
+        User user = findUserById(id);
+        Household household = user.getHousehold();
+        String userRoleName = user.getRole().getName();
+
+        repository.delete(user);
+
+        if(userRoleName.equals("owner")
+                && repository.countByHouseholdIdAndRoleId(user.getHousehold().getId(), (byte) 1) == 1) {
+            householdService.delete(household);
         }
+
+
     }
 
     public User saveUser(User user){
@@ -48,12 +57,7 @@ public class UserService {
     }
 
     public User update(User user){
-        try {
-            return repository.save(user);
-
-        } catch (DataIntegrityViolationException e){
-            throw new NotFoundForeignKeyIdException("Not Found household ID or/and role (foreign key)");
-        }
+        return saveUser(user);
     }
 
     protected void setHouseholdForUserId(User user, @NotNull Household household){

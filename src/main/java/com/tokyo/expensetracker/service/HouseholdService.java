@@ -6,6 +6,7 @@ import com.tokyo.expensetracker.exception.UserNotMemberOfYourHouseholdOrHousehol
 import com.tokyo.expensetracker.model.Household;
 import com.tokyo.expensetracker.model.User;
 import com.tokyo.expensetracker.repository.HouseholdRepository;
+import com.tokyo.expensetracker.repository.RoleRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -22,11 +23,13 @@ public class HouseholdService {
 
     private final HouseholdRepository householdRepository;
     private final UserService userService;
+    private final RoleServices roleServices;
     private static final LongFunction<String> householdNotFoundMessage = id -> "Household not found with id = " + id;
 
-    public HouseholdService(HouseholdRepository householdRepository, UserService userService) {
+    public HouseholdService(HouseholdRepository householdRepository, UserService userService, RoleServices roleServices) {
         this.householdRepository = householdRepository;
         this.userService = userService;
+        this.roleServices = roleServices;
     }
 
     public List<Household> findAll() {
@@ -68,16 +71,8 @@ public class HouseholdService {
 
     public void deleteById(Long id) {
         Household household = findById(id);
-
-        if (household.getMembers() != null) {
-            household.getMembers()
-                    .forEach(this::switchMemberToNewHousehold);
-        }
-
-        householdRepository.deleteById(id);
-
+        delete(household);
     }
-
 
     public List<User> findAllMembers(Long householdId) {
         Household household = findById(householdId);
@@ -95,14 +90,24 @@ public class HouseholdService {
         switchMemberToNewHousehold(member);
     }
 
+    protected void delete(Household household) {
+        if (household.getMembers() != null) {
+            household.getMembers()
+                    .forEach(this::switchMemberToNewHousehold);
+        }
+
+        householdRepository.delete(household);
+    }
+
     private void switchMemberToNewHousehold(User member) {
-        Household household = new Household();
-        household.setName("Personal");
+        Household household = Household.builder()
+                .name("Personal")
         // TODO: change to member.getBalance()
-        household.setTotalBalance(BigDecimal.ZERO);
+                .totalBalance(BigDecimal.ZERO).build();
         householdRepository.save(household);
 
-        // TODO: member->setRole to owner
+
+        member.setRole(roleServices.findById(1));
 
         userService.setHouseholdForUserId(member, household);
     }
