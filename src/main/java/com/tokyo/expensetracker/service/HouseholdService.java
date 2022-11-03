@@ -3,26 +3,33 @@ package com.tokyo.expensetracker.service;
 import com.tokyo.expensetracker.exception.DeleteDataIntegrityViolationException;
 import com.tokyo.expensetracker.exception.NotEnteredForeignKeyIdException;
 import com.tokyo.expensetracker.exception.NotFoundException;
+import com.tokyo.expensetracker.exception.UserNotMemberOfYourHouseholdOrHouseholdNotExists;
 import com.tokyo.expensetracker.model.Household;
 import com.tokyo.expensetracker.model.User;
 import com.tokyo.expensetracker.repository.HouseholdRepository;
-import com.tokyo.expensetracker.repository.UserRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionSystemException;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.ConstraintViolationException;
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.function.LongFunction;
 
 @Service
 public class HouseholdService {
 
-    private HouseholdRepository householdRepository;
-    private UserRepository userRepository;
+    private final HouseholdRepository householdRepository;
+    private final UserService userService;
+    private static final LongFunction<String> householdNotFoundMessage = id -> "Household not found with id = " + id;
 
-    public HouseholdService(HouseholdRepository householdRepository, UserRepository userRepository) {
+    public HouseholdService(HouseholdRepository householdRepository, UserService userService) {
         this.householdRepository = householdRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     public List<Household> findAll() {
@@ -32,7 +39,7 @@ public class HouseholdService {
     public Household findById(Long id) {
         return householdRepository
                 .findById(id)
-                .orElseThrow(() -> new NotFoundException("Household not found with id = " + id));
+                .orElseThrow(() -> new NotFoundException(householdNotFoundMessage.apply(id)));
     }
 
     public Household findByInvitationCode(String invitationCode) {
@@ -49,15 +56,15 @@ public class HouseholdService {
         }
     }
 
-    public Household update(Long id, Household household) {
-        if (!householdRepository.existsById(id)) {
-            throw new NotFoundException("Household not found with id = " + id);
-        }
+    public Household update(Long id, Household newHousehold) {
 
-        household.setId(id);
+        Household household = findById(id);
+        BeanUtils.copyProperties(newHousehold, household, "id", "members", "transactions");
+
         try {
             return householdRepository.save(household);
-        } catch (InvalidDataAccessApiUsageException | DataIntegrityViolationException e){
+        } catch (InvalidDataAccessApiUsageException | DataIntegrityViolationException
+                 | TransactionSystemException e){
             throw new NotEnteredForeignKeyIdException("body request should have: {name, totalBalance}");
         }
     }
@@ -66,7 +73,7 @@ public class HouseholdService {
         try {
             householdRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
-            throw new NotFoundException("Household not found with id = " + id);
+            throw new NotFoundException(householdNotFoundMessage.apply(id));
         } catch (DataIntegrityViolationException e) {
             // TODO: household and FK
             throw new DeleteDataIntegrityViolationException("Cannot delete household: " +
@@ -81,32 +88,23 @@ public class HouseholdService {
         return household.getMembers();
     }
 
-    // TODO: use UserService instead
-    public void addMember(Long householdId, Long memberId) {
-        Household household = findById(householdId);
-        User member = userRepository
-                .findById(memberId)
-                .orElseThrow(() -> new NotFoundException("User not found with id = " + memberId));
-
-        member.setHousehold(household);
-        household.getMembers().add(member);
-
-        householdRepository.save(household);
-        userRepository.save(member);
-    }
-
-    // TODO: use UserService instead
+    // TODO: admin level
+    @Transactional
     public void deleteMember(Long householdId, Long memberId) {
-        Household household = findById(householdId);
-        User member = userRepository
-                .findById(memberId)
-                .orElseThrow(() -> new NotFoundException("User not found with id = " + memberId));
+        User user = userService.findUserById(memberId);
+        if (! user.getHousehold().getId().equals(householdId)){
+             throw new UserNotMemberOfYourHouseholdOrHouseholdNotExists(householdId, memberId);
+        }
 
-        member.setHousehold(null);
-        household.getMembers().remove(member);
-
+        Household household = new Household();
+        household.setName("Personal");
+        // TODO: change to user.getBalance()
+        household.setTotalBalance(BigDecimal.ZERO);
         householdRepository.save(household);
-        userRepository.save(member);
+
+        // TODO: user->setRole to owner
+
+        userService.setHouseholdForUserId(user, household);
     }
 
 }

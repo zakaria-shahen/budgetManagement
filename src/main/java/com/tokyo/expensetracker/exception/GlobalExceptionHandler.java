@@ -1,9 +1,11 @@
 package com.tokyo.expensetracker.exception;
 
+import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingPathVariableException;
@@ -49,6 +51,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ).BuildResponseEntity();
     }
 
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotWritable(HttpMessageNotWritableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        return handleOther(request, ex);
+
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleConversionNotSupported(ConversionNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        return handleOther(request, ex);
+    }
+
+
     private static String getRequestUri(WebRequest request) {
         return getRequestUri(((ServletWebRequest) request).getRequest());
     }
@@ -69,7 +83,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({
             NotFoundForeignKeyIdException.class,
             DeleteDataIntegrityViolationException.class,
-            InsufficientFundsException.class
+            InsufficientFundsException.class,
+            UserNotMemberOfYourHouseholdOrHouseholdNotExists.class
     })
     public ResponseEntity<?> conflictHandler(HttpServletRequest request, Exception e) {
         return new ErrorMessage(
@@ -97,8 +112,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ).BuildResponseEntity();
     }
 
-    // @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleOther(HttpServletRequest request, Exception e) {
+    private ResponseEntity<Object> handleOther(WebRequest request, Exception e) {
         return new ErrorMessage(
                 HttpStatus.BAD_REQUEST,
                 "Unspecified request problem",
@@ -106,4 +120,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ).BuildResponseEntity();
     }
 
+
+    // TODO: java.sql.SQLIntegrityConstraintViolationException, java.lang.NullPointerException
 }

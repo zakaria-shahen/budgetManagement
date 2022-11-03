@@ -5,7 +5,6 @@ import com.tokyo.expensetracker.exception.NotFoundException;
 import com.tokyo.expensetracker.exception.NotFoundForeignKeyIdException;
 import com.tokyo.expensetracker.model.Transaction;
 import com.tokyo.expensetracker.repository.TransactionRepository;
-import lombok.NoArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -16,8 +15,8 @@ import java.util.List;
 @Service
 public class TransactionServiceImpl implements TransactionService {
 
-    private TransactionRepository repository;
-    private HouseholdService householdService;
+    private final TransactionRepository repository;
+    private final HouseholdService householdService;
 
     public TransactionServiceImpl(TransactionRepository repository, HouseholdService householdService) {
         this.repository = repository;
@@ -30,8 +29,12 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<Transaction> findAllByUser(Long UserId) {
-        return repository.findByUserId(UserId);
+    public List<Transaction> findAllByUser(Long userId) {
+        var transactionsList = repository.findByUserId(userId);
+        if (transactionsList.isEmpty()) {
+            throw new NotFoundException("There was no transaction for the user id = " + userId);
+        }
+        return transactionsList;
     }
 
     @Override

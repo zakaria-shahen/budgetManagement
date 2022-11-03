@@ -1,11 +1,10 @@
 package com.tokyo.expensetracker.repository;
 
-import java.util.Optional;
-
+import com.tokyo.expensetracker.model.Household;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.tokyo.expensetracker.model.Household;
+import java.util.Optional;
 
 @Repository
 public interface HouseholdRepository extends JpaRepository<Household, Long> {
