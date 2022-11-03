@@ -2,10 +2,7 @@ package com.tokyo.expensetracker.model;
 
 
 import com.fasterxml.jackson.annotation.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -18,6 +15,7 @@ import java.util.List;
 @Entity(name = "user_")
 @SQLDelete(sql = "update user_ set deleted=true where id = ?")
 @Where(clause = "deleted = false")
+@Builder
 @Setter
 @Getter
 @AllArgsConstructor
@@ -49,6 +47,10 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Transaction> transactions;
 
+    @JsonIgnore
+    @Builder.Default
+    private Boolean deleted = false;
+
     @AssertTrue(message = "Must add User ID (Foreign Key)")
     @JsonIgnore
     public boolean isValidHouseholdId(){
@@ -59,13 +61,6 @@ public class User {
     @JsonIgnore
     public boolean isValidRoleId(){
         return role.getId() != null;
-    }
-
-    @JsonIgnore
-    private Boolean deleted = false;
-
-    public User(long id) {
-        this.id = id;
     }
 
 }

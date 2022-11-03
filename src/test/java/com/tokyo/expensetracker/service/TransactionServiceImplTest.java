@@ -35,14 +35,14 @@ class TransactionServiceImplTest {
 
     @InjectMocks
     private TransactionServiceImpl transactionService;
-    private final Transaction transaction = new Transaction(
-            1L,
-            BigDecimal.ONE,
-            Transaction.Type.DEPOSIT,
-            "test",
-            new User(1L),
-            new Household(1L, BigDecimal.valueOf(100))
-    );
+    private final Transaction transaction = Transaction.builder()
+            .id(1L)
+            .amount(BigDecimal.ONE)
+            .type(Transaction.Type.DEPOSIT)
+            .memo("test")
+            .user(User.builder().id(1L).build())
+            .household(Household.builder().id(1L).totalBalance(BigDecimal.ONE).build())
+            .build();
     private final List<Transaction> transactionList = List.of(transaction, transaction);
     private final Household household = transaction.getHousehold();
 

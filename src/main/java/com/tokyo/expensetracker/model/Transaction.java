@@ -1,10 +1,7 @@
 package com.tokyo.expensetracker.model;
 
 import com.fasterxml.jackson.annotation.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.AssertTrue;
@@ -15,6 +12,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
+@Builder
 @Setter
 @Getter
 @NoArgsConstructor
@@ -55,6 +53,7 @@ public class Transaction {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @JsonFormat(pattern = "dd-mm-yyyy hh:mm")
+    @Builder.Default
     private LocalDateTime date = LocalDateTime.now();
 
 
@@ -77,13 +76,4 @@ public class Transaction {
         return household.getId() != null;
     }
 
-
-    public Transaction(Long id, BigDecimal amount, Type type, String memo, User user, Household household) {
-        this.id = id;
-        this.amount = amount;
-        this.type = type;
-        this.memo = memo;
-        this.user = user;
-        this.household = household;
-    }
 }
