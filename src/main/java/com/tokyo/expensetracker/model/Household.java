@@ -1,9 +1,9 @@
 package com.tokyo.expensetracker.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@SQLDelete(sql = "update household set deleted=true where id = ?")
+@Where(clause = "deleted = false")
 @Setter
 @Getter
 @AllArgsConstructor
@@ -49,6 +51,9 @@ public class Household {
 
     private String greetingMsg;
     private String invitationCode;
+
+    @JsonIgnore
+    private Boolean deleted = false;
 
     public Household(Long id) {
         this.id = id;

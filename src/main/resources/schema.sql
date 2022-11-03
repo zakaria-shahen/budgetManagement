@@ -9,7 +9,8 @@ create table household
     monthly_deposits  decimal(19, 2) check(monthly_deposits > -1),
     monthly_spendings decimal(19, 2) check(monthly_spendings > -1),
     greeting_msg      varchar(255),
-    invitation_code   varchar(255)
+    invitation_code   varchar(255),
+    deleted      boolean      not null default false
 );
 
 create table `role`
@@ -24,6 +25,7 @@ create table user_
     name         varchar(255) not null,
     household_id bigint       not null,
     role_id      tinyint      not null,
+    deleted      boolean      not null default false,
     foreign key(role_id) references role(id),
     foreign key(household_id) references household(id)
 );

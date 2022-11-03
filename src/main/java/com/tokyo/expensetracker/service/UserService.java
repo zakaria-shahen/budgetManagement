@@ -1,6 +1,5 @@
 package com.tokyo.expensetracker.service;
 
-import com.tokyo.expensetracker.exception.DeleteDataIntegrityViolationException;
 import com.tokyo.expensetracker.exception.NotFoundException;
 import com.tokyo.expensetracker.exception.NotFoundForeignKeyIdException;
 import com.tokyo.expensetracker.model.Household;
@@ -9,7 +8,6 @@ import com.tokyo.expensetracker.repository.UserRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -37,10 +35,6 @@ public class UserService {
             repository.deleteById(id);
         } catch (EmptyResultDataAccessException e){
             throw new NotFoundException("Not Found User");
-        }  catch (DataIntegrityViolationException e) {
-            // TODO: User and FK
-            throw new DeleteDataIntegrityViolationException("Cannot delete User: " +
-                            "Must Delete all user Transactions or/and the user leaves the household");
         }
     }
 

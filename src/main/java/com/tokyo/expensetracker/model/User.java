@@ -1,14 +1,13 @@
 package com.tokyo.expensetracker.model;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIncludeProperties;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.fasterxml.jackson.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.AssertTrue;
@@ -17,6 +16,8 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity(name = "user_")
+@SQLDelete(sql = "update user_ set deleted=true where id = ?")
+@Where(clause = "deleted = false")
 @Setter
 @Getter
 @AllArgsConstructor
@@ -59,6 +60,9 @@ public class User {
     public boolean isValidRoleId(){
         return role.getId() != null;
     }
+
+    @JsonIgnore
+    private Boolean deleted = false;
 
     public User(long id) {
         this.id = id;
