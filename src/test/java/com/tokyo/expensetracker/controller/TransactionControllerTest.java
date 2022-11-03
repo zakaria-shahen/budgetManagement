@@ -33,16 +33,16 @@ class TransactionControllerTest {
     private TransactionService transactionService;
 
     private final String path = "/api/v1/transactions/";
-    private final User user = new User(1L);
-    private final Household household = new Household(1L);
-    private final Transaction transaction = new Transaction(
-            1L,
-            BigDecimal.ONE,
-            Transaction.Type.DEPOSIT,
-            "test",
-            user,
-            household
-    );
+    private final User user = User.builder().id(1L).build();
+    private final Household household = Household.builder().id(1L).totalBalance(BigDecimal.ONE).build();
+    private final Transaction transaction = Transaction.builder()
+            .id(1L)
+            .amount(BigDecimal.ONE)
+            .type(Transaction.Type.DEPOSIT)
+            .memo("test")
+            .user(user)
+            .household(household)
+            .build();
     private final List<Transaction> transactionList = List.of(transaction, transaction);
 
 

@@ -68,22 +68,7 @@ public class HouseholdController {
         return new ResponseEntity<>(allMembers, HttpStatus.OK);
     }
 
-    @PostMapping("/{householdId}/members")
-    public ResponseEntity<?> addMemberToHousehold(@PathVariable Long householdId, @RequestBody Long memberId) {
-        householdService.addMember(householdId, memberId);
-
-        // Set the location header for the newly created Member
-        HttpHeaders responseHeaders = new HttpHeaders();
-        URI newMemberlUri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(memberId)
-                .toUri();
-        responseHeaders.setLocation(newMemberlUri);
-
-        return new ResponseEntity<>(responseHeaders, HttpStatus.CREATED);
-    }
-
+    // TODO: Admin Level
     @DeleteMapping("/{householdId}/members/{memberId}")
     public ResponseEntity<?> removeMemberFromHousehold(@PathVariable Long householdId, @PathVariable Long memberId) {
         householdService.deleteMember(householdId, memberId);

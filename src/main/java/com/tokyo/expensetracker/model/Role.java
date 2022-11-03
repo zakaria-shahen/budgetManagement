@@ -33,5 +33,9 @@ public class Role {
     public Role(String name) {
         this.name = name;
     }
+
+    public Role(int id) {
+        this.id = (byte) id;
+    }
 }
 

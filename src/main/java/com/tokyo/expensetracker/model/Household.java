@@ -1,20 +1,25 @@
 package com.tokyo.expensetracker.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@SQLDelete(sql = "update household set deleted=true where id = ?")
+@Where(clause = "deleted = false")
+@Builder
 @Setter
 @Getter
 @AllArgsConstructor
@@ -34,7 +39,8 @@ public class Household {
     private String name;
 
     @PositiveOrZero
-    private BigDecimal totalBalance;
+    @Builder.Default
+    private BigDecimal totalBalance = BigDecimal.ZERO;
     @PositiveOrZero
     private BigDecimal monthlySpendings;
     @PositiveOrZero
@@ -48,17 +54,13 @@ public class Household {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @JsonFormat(pattern = "dd-mm-yy hh:mm")
+    @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
 
     private String greetingMsg;
     private String invitationCode;
 
-    public Household(Long id) {
-        this.id = id;
-    }
-
-    public Household(Long id, BigDecimal totalBalance) {
-        this.id = id;
-        this.totalBalance = totalBalance;
-    }
+    @JsonIgnore
+    @Builder.Default
+    private Boolean deleted = false;
 }
