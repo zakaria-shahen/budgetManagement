@@ -4,11 +4,15 @@ info:
   version: 1.0.0
 servers:
   - url: http://localhost:8080
+tags:
+  - name: Transactions
+  - name: Household
+  - name: Users
 paths:
   /api/v1/transactions:
     get:
       tags:
-        - default
+        - Transactions
       summary: GET
       responses:
         '200':
@@ -17,7 +21,80 @@ paths:
             application/json: {}
     post:
       tags:
-        - default
+        - Transactions
+      summary: POST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                memo: test 1
+                user_id: 1
+                household: 1
+                amount: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Transactions
+      summary: DELETE
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/transactions/1:
+    get:
+      tags:
+        - Transactions
+      summary: GET id
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Transactions
+      summary: DELETE id
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/transactions/:
+    get:
+      tags:
+        - Transactions
+      summary: GET UserID
+      parameters:
+        - name: User_id
+          in: query
+          schema:
+            type: integer
+          example: '1'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/users:
+    get:
+      tags:
+        - Users
+      summary: GET
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Users
       summary: POST
       requestBody:
         content:
@@ -36,19 +113,10 @@ paths:
           description: Successful response
           content:
             application/json: {}
-    delete:
-      tags:
-        - default
-      summary: DELETE
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-  /api/v1/transactions/1:
+  /api/v1/users/1:
     get:
       tags:
-        - default
+        - Users
       summary: GET id
       responses:
         '200':
@@ -57,24 +125,8 @@ paths:
             application/json: {}
     delete:
       tags:
-        - default
+        - Users
       summary: DELETE id
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-  /api/v1/transactions/:
-    get:
-      tags:
-        - default
-      summary: GET UserID
-      parameters:
-        - name: User_id
-          in: query
-          schema:
-            type: integer
-          example: '1'
       responses:
         '200':
           description: Successful response
