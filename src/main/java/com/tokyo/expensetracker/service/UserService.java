@@ -35,9 +35,8 @@ public class UserService {
     public void deleteUser(Long id){
         User user = findUserById(id);
         Household household = user.getHousehold();
-        int userRoleId = user.getRole().getId();
 
-        if(userRoleId == 1 && repository.countByHouseholdIdAndRoleId(household.getId(), (byte) 1) == 1) {
+        if(isLastOwner(user)) {
             repository.delete(user);
             householdService.delete(household);
         } else {
@@ -72,5 +71,10 @@ public class UserService {
     protected void setHouseholdForUserId(User user, @NotNull Household household){
         user.setHousehold(household);
         repository.save(user);
+    }
+
+    protected boolean isLastOwner(User user) {
+        return user.getRole().getId() == 1
+                && repository.countByHouseholdIdAndRoleId(user.getHousehold().getId(), (byte) 1) == 1;
     }
 }

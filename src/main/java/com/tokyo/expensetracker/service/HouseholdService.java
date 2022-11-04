@@ -1,5 +1,6 @@
 package com.tokyo.expensetracker.service;
 
+import com.tokyo.expensetracker.exception.NotAllowedDeleteLastOwnerException;
 import com.tokyo.expensetracker.exception.NotEnteredForeignKeyIdException;
 import com.tokyo.expensetracker.exception.NotFoundException;
 import com.tokyo.expensetracker.exception.UserNotMemberOfYourHouseholdOrHouseholdNotExists;
@@ -83,9 +84,15 @@ public class HouseholdService {
     // TODO: admin level
     @Transactional
     public void deleteMember(Long householdId, Long memberId) {
-        // TODO: Admin level: Prevent admin from deleting himself from Household
-        //          (to delete himself from Household, must create a new Household)
         User member = userService.findUserById(memberId);
+
+        if (userService.isLastOwner(member)) {
+            throw new NotAllowedDeleteLastOwnerException(
+                    "Member=" + member.getId() + " is the last owner: "
+                    + "The only way to delete the last owner is to delete household"
+            );
+        }
+
         if (! member.getHousehold().getId().equals(householdId)){
              throw new UserNotMemberOfYourHouseholdOrHouseholdNotExists(householdId, memberId);
         }

@@ -84,7 +84,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             NotFoundForeignKeyIdException.class,
             DeleteDataIntegrityViolationException.class,
             InsufficientFundsException.class,
-            UserNotMemberOfYourHouseholdOrHouseholdNotExists.class
+            UserNotMemberOfYourHouseholdOrHouseholdNotExists.class,
+            NotAllowedDeleteLastOwnerException.class
     })
     public ResponseEntity<?> conflictHandler(HttpServletRequest request, Exception e) {
         return new ErrorMessage(
