@@ -50,6 +50,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public Transaction save(Transaction transaction) {
+        transaction.setId(null);
 
         updateTotalBalance(
                 transaction.getAmount(),

@@ -49,6 +49,7 @@ public class HouseholdService {
 
     public Household create(Household household) {
         // TODO: Move the creator user to the new household
+        household.setId(null);
         try {
            return householdRepository.save(household);
         } catch (InvalidDataAccessApiUsageException | DataIntegrityViolationException e){

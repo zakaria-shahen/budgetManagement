@@ -48,6 +48,15 @@ public class UserService {
     }
 
     public User saveUser(User user){
+        user.setId(null);
+        return saveOrUpdate(user);
+    }
+
+    public User update(User user){
+        return saveOrUpdate(user);
+    }
+
+    private User saveOrUpdate(User user) {
         if (householdService.findById(user.getHousehold().getId()) == null) {
             throw new NotFoundForeignKeyIdException("Not Found household ID (foreign key)");
         }
@@ -59,11 +68,7 @@ public class UserService {
             throw new NotFoundForeignKeyIdException("Not Found role (foreign key)");
         }
     }
-
-    public User update(User user){
-        return saveUser(user);
-    }
-
+    
     protected void setHouseholdForUserId(User user, @NotNull Household household){
         user.setHousehold(household);
         repository.save(user);
