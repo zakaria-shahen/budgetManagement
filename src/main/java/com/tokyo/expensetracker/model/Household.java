@@ -15,6 +15,7 @@ import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @SQLDelete(sql = "update household set deleted=true where id = ?")
@@ -63,4 +64,17 @@ public class Household {
     @JsonIgnore
     @Builder.Default
     private Boolean deleted = false;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Household household = (Household) o;
+        return Objects.equals(id, household.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }
