@@ -6,7 +6,6 @@ import com.tokyo.expensetracker.exception.UserNotMemberOfYourHouseholdOrHousehol
 import com.tokyo.expensetracker.model.Household;
 import com.tokyo.expensetracker.model.User;
 import com.tokyo.expensetracker.repository.HouseholdRepository;
-import com.tokyo.expensetracker.repository.RoleRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -49,6 +48,7 @@ public class HouseholdService {
     }
 
     public Household create(Household household) {
+        // TODO: Move the creator user to the new household
         try {
            return householdRepository.save(household);
         } catch (InvalidDataAccessApiUsageException | DataIntegrityViolationException e){
@@ -82,6 +82,8 @@ public class HouseholdService {
     // TODO: admin level
     @Transactional
     public void deleteMember(Long householdId, Long memberId) {
+        // TODO: Admin level: Prevent admin from deleting himself from Household
+        //          (to delete himself from Household, must create a new Household)
         User member = userService.findUserById(memberId);
         if (! member.getHousehold().getId().equals(householdId)){
              throw new UserNotMemberOfYourHouseholdOrHouseholdNotExists(householdId, memberId);

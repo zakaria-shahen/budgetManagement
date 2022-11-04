@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -36,6 +37,11 @@ public class Role {
 
     public Role(int id) {
         this.id = (byte) id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
 

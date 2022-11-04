@@ -35,24 +35,28 @@ public class UserService {
     public void deleteUser(Long id){
         User user = findUserById(id);
         Household household = user.getHousehold();
-        String userRoleName = user.getRole().getName();
+        int userRoleId = user.getRole().getId();
 
-        repository.delete(user);
-
-        if(userRoleName.equals("owner")
-                && repository.countByHouseholdIdAndRoleId(user.getHousehold().getId(), (byte) 1) == 1) {
+        if(userRoleId == 1 && repository.countByHouseholdIdAndRoleId(household.getId(), (byte) 1) == 1) {
+            repository.delete(user);
             householdService.delete(household);
+        } else {
+            repository.delete(user);
         }
 
 
     }
 
     public User saveUser(User user){
+        if (householdService.findById(user.getHousehold().getId()) == null) {
+            throw new NotFoundForeignKeyIdException("Not Found household ID (foreign key)");
+        }
+
         try {
             return repository.save(user);
 
         } catch (DataIntegrityViolationException e){
-            throw new NotFoundForeignKeyIdException("Not Found household ID or/and role (foreign key)");
+            throw new NotFoundForeignKeyIdException("Not Found role (foreign key)");
         }
     }
 
