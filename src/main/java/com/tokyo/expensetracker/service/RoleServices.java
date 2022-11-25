@@ -4,6 +4,8 @@ import com.tokyo.expensetracker.model.Role;
 import com.tokyo.expensetracker.repository.RoleRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class RoleServices {
 
@@ -15,5 +17,9 @@ public class RoleServices {
 
     public Role findById(int id){
         return repository.findById((byte) id).get();
+    }
+
+    public List<Role> saveAll(List<Role> roles) {
+         return repository.saveAll(roles);
     }
 }
