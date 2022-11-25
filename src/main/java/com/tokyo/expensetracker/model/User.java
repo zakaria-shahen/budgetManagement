@@ -28,9 +28,14 @@ public class User {
     private Long id;
 
     @NotEmpty @NotNull
+    @Column(unique = true)
     private String name;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @NotEmpty @NotNull
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String password;
+
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
     @JsonIncludeProperties("id")
     @JsonUnwrapped(prefix = "role_")

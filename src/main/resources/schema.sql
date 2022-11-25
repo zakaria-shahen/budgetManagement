@@ -22,7 +22,8 @@ create table `role`
 create table user_
 (
     id           bigint auto_increment primary key,
-    name         varchar(255) not null,
+    name         varchar(255) not null unique,
+    password     varchar(255) not null,
     household_id bigint       not null,
     role_id      tinyint      not null,
     deleted      boolean      not null default false,

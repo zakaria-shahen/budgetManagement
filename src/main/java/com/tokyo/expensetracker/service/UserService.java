@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -52,6 +53,7 @@ public class UserService {
     }
 
     public User update(User user){
+        // TODO: check user auth
         return saveOrUpdate(user);
     }
 
@@ -64,7 +66,7 @@ public class UserService {
             return repository.save(user);
 
         } catch (DataIntegrityViolationException e){
-            throw new NotFoundForeignKeyIdException("Not Found role (foreign key)");
+            throw new NotFoundForeignKeyIdException("Not Found role (foreign key) or username exists");
         }
     }
     
@@ -76,5 +78,9 @@ public class UserService {
     protected boolean isLastOwner(User user) {
         return user.getRole().getId() == 1
                 && repository.countByHouseholdIdAndRoleId(user.getHousehold().getId(), (byte) 1) == 1;
+    }
+
+    public Optional<User> findUserByName(String name) {
+        return repository.findByName(name);
     }
 }
