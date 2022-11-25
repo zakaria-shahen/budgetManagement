@@ -8,10 +8,12 @@ import com.tokyo.expensetracker.service.RoleServices;
 import com.tokyo.expensetracker.service.UserService;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.function.Function;
 
 @Component
 public class DateLoader implements ApplicationRunner {
@@ -19,11 +21,13 @@ public class DateLoader implements ApplicationRunner {
     private final UserService userService;
     private final RoleServices roleServices;
     private final HouseholdService householdService;
+    private final Function<String, String> encode;
 
-    public DateLoader(UserService userService, RoleServices roleServices, HouseholdService householdService) {
+    public DateLoader(UserService userService, RoleServices roleServices, HouseholdService householdService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.roleServices = roleServices;
         this.householdService = householdService;
+        this.encode = passwordEncoder::encode;
     }
 
     @Override
@@ -45,7 +49,7 @@ public class DateLoader implements ApplicationRunner {
         userService.saveUser(
                 User.builder()
                         .role(roles.get(0))
-                        .password("pass")
+                        .password(encode.apply("pass"))
                         .name("omar")
                         .household(household).build()
         );
