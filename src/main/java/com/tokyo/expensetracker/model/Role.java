@@ -21,13 +21,13 @@ public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Byte id;
+    private Integer id;
 
     @NotEmpty
     private String name;
 
     protected Role(int id, String name) {
-        this.id = (byte) id;
+        this.id = id;
         this.name = name;
     }
 
@@ -36,7 +36,7 @@ public class Role {
     }
 
     public Role(int id) {
-        this.id = (byte) id;
+        this.id = id;
     }
 
     @Override
